@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/alanwade2001/go-sepa-infra/routing"
+	"github.com/alanwade2001/go-sepa-portal/internal/model"
 	"github.com/alanwade2001/go-sepa-portal/internal/service"
 	"github.com/gin-gonic/gin"
 )
@@ -19,6 +20,11 @@ func NewInitiation(service *service.Initiation, r *routing.Router) *Initiation {
 
 	r.Router.GET("/initiations", initiation.GetInitiation)
 	r.Router.GET("/initiations/:id", initiation.GetInitiationByID)
+
+	r.Router.PUT("/initiations/:id/approve", initiation.PutInitiationApprove)
+	r.Router.PUT("/initiations/:id/cancel", initiation.PutInitiationCancel)
+	r.Router.PUT("/initiations/:id/accept", initiation.PutInitiationAccept)
+	r.Router.PUT("/initiations/:id/reject", initiation.PutInitiationReject)
 
 	return initiation
 }
@@ -52,38 +58,38 @@ func (i *Initiation) GetInitiationByID(c *gin.Context) {
 
 }
 
-// func (i *Initiation) PutInitiationApprove(c *gin.Context) {
-// 	id := c.Param("id")
-// 	initiation, err := i.service.SendInitiationApprove(id)
-// 	i.PutResponse(c, initiation, err)
-// }
+func (i *Initiation) PutInitiationApprove(c *gin.Context) {
+	id := c.Param("id")
+	initiation, err := i.service.SendInitiationApprove(id)
+	i.PutResponse(c, initiation, err)
+}
 
-// func (i *Initiation) PutInitiationCancel(c *gin.Context) {
-// 	id := c.Param("id")
-// 	initiation, err := i.service.SendInitiationCancel(id)
-// 	i.PutResponse(c, initiation, err)
-// }
+func (i *Initiation) PutInitiationCancel(c *gin.Context) {
+	id := c.Param("id")
+	initiation, err := i.service.SendInitiationCancel(id)
+	i.PutResponse(c, initiation, err)
+}
 
-// func (i *Initiation) PutInitiationAccept(c *gin.Context) {
-// 	id := c.Param("id")
-// 	initiation, err := i.service.SendInitiationAccept(id)
-// 	i.PutResponse(c, initiation, err)
-// }
+func (i *Initiation) PutInitiationAccept(c *gin.Context) {
+	id := c.Param("id")
+	initiation, err := i.service.SendInitiationAccept(id)
+	i.PutResponse(c, initiation, err)
+}
 
-// func (i *Initiation) PutInitiationReject(c *gin.Context) {
-// 	id := c.Param("id")
-// 	initiation, err := i.service.SendInitiationReject(id)
-// 	i.PutResponse(c, initiation, err)
-// }
+func (i *Initiation) PutInitiationReject(c *gin.Context) {
+	id := c.Param("id")
+	initiation, err := i.service.SendInitiationReject(id)
+	i.PutResponse(c, initiation, err)
+}
 
-// func (i *Initiation) PutResponse(c *gin.Context, initiation *model.Initiation, err error) {
+func (i *Initiation) PutResponse(c *gin.Context, initiation *model.Initiation, err error) {
 
-// 	if err != nil {
-// 		m := make(map[string]interface{})
-// 		m["error"] = err
-// 		c.IndentedJSON(http.StatusBadRequest, m)
-// 		return
-// 	}
+	if err != nil {
+		m := make(map[string]interface{})
+		m["error"] = err
+		c.IndentedJSON(http.StatusBadRequest, m)
+		return
+	}
 
-// 	c.IndentedJSON(http.StatusOK, initiation)
-// }
+	c.IndentedJSON(http.StatusOK, initiation)
+}
