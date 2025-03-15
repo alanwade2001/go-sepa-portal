@@ -43,7 +43,7 @@ func NewApp() *App {
 }
 
 func (a *App) Run() {
-	a.Infra.Run()
+	a.Infra.RunWithTLS()
 }
 
 func main() {

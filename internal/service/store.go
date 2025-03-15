@@ -1,6 +1,7 @@
 package service
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"log"
@@ -20,11 +21,19 @@ type Store struct {
 
 func NewStore() *Store {
 
-	address := utils.Getenv("DOCUMENTS_ADDRESS", "http://0.0.0.0:8081")
+	address := utils.Getenv("DOCS_ADDRESS", "https://0.0.0.0:8443")
+	log.Printf("docs address: [%s]", address)
 
 	s := &Store{
 		Address: address,
-		client:  http.Client{Timeout: 10 * time.Second},
+		client: http.Client{
+			Timeout: 10 * time.Second,
+			Transport: &http.Transport{
+				TLSClientConfig: &tls.Config{
+					InsecureSkipVerify: true,
+				},
+			},
+		},
 	}
 
 	return s
