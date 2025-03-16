@@ -3,7 +3,7 @@ package service
 import (
 	"strconv"
 
-	"github.com/alanwade2001/go-sepa-iso/gen"
+	"github.com/alanwade2001/go-sepa-iso/pain_001_001_03"
 	"github.com/alanwade2001/go-sepa-iso/schema"
 )
 
@@ -16,7 +16,7 @@ func NewControl() *Control {
 	return control
 }
 
-func (c *Control) Check(doc *schema.P1Document) bool {
+func (c *Control) Check(doc *schema.Pain001Document) bool {
 
 	if !c.ControlGrpHdrCtrlSum(doc) {
 		return false
@@ -39,7 +39,7 @@ func (c *Control) Check(doc *schema.P1Document) bool {
 	return true
 }
 
-func (c *Control) ControlGrpHdrCtrlSum(doc *schema.P1Document) bool {
+func (c *Control) ControlGrpHdrCtrlSum(doc *schema.Pain001Document) bool {
 	ghCtrlSum := doc.CstmrCdtTrfInitn.GrpHdr.CtrlSum
 
 	pmtInves := doc.CstmrCdtTrfInitn.PmtInf
@@ -52,7 +52,7 @@ func (c *Control) ControlGrpHdrCtrlSum(doc *schema.P1Document) bool {
 	return ghCtrlSum == ctrlSum
 }
 
-func (c *Control) ControlGrpHdrNbOfTxs(doc *schema.P1Document) bool {
+func (c *Control) ControlGrpHdrNbOfTxs(doc *schema.Pain001Document) bool {
 	ghNbOfTxs, _ := strconv.Atoi(doc.CstmrCdtTrfInitn.GrpHdr.NbOfTxs)
 
 	pmtInves := doc.CstmrCdtTrfInitn.PmtInf
@@ -66,7 +66,7 @@ func (c *Control) ControlGrpHdrNbOfTxs(doc *schema.P1Document) bool {
 	return ghNbOfTxs == nbOfTxs
 }
 
-func (c *Control) ControlPmtInfCtrlSum(pmtInf *gen.PaymentInstructionInformation3) bool {
+func (c *Control) ControlPmtInfCtrlSum(pmtInf *pain_001_001_03.PaymentInstructionInformation3) bool {
 	piCtrlSum := pmtInf.CtrlSum
 
 	cdtTrfTxInves := pmtInf.CdtTrfTxInf
@@ -79,7 +79,7 @@ func (c *Control) ControlPmtInfCtrlSum(pmtInf *gen.PaymentInstructionInformation
 	return piCtrlSum == ctrlSum
 }
 
-func (c *Control) ControlPmtInfNbOfTxs(pmtInf *gen.PaymentInstructionInformation3) bool {
+func (c *Control) ControlPmtInfNbOfTxs(pmtInf *pain_001_001_03.PaymentInstructionInformation3) bool {
 	piNbOfTxs, _ := strconv.Atoi(pmtInf.NbOfTxs)
 
 	nbOfTxs := len(pmtInf.CdtTrfTxInf)

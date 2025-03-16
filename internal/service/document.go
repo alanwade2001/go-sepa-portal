@@ -40,7 +40,7 @@ func (d *Document) InitiateDocument(content string) (newInitiation *model.Initia
 		return nil, err
 	}
 
-	xmlDocument := &s.P1Document{}
+	xmlDocument := &s.Pain001Document{}
 	xml.NewDecoder(strings.NewReader(content)).Decode(xmlDocument)
 
 	accepted := d.control.Check(xmlDocument)
