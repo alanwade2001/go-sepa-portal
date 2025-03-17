@@ -2,7 +2,7 @@ package service
 
 import (
 	"encoding/json"
-	"log"
+	"log/slog"
 
 	"github.com/alanwade2001/go-sepa-portal/internal/model"
 	q "github.com/alanwade2001/go-sepa-q"
@@ -54,7 +54,7 @@ func (s *Message) sendInitiation(dest string, initn *model.Initiation) error {
 		return err
 	}
 
-	log.Printf("sending initiation dest:[%s] id:[%d]", dest, initn.ID)
+	slog.Info("sending initiation", "dest", dest, "initn.ID", initn.ID)
 
 	return s.sender.SendMessage(dest, bytes)
 }

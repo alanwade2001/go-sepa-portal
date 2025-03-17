@@ -2,7 +2,7 @@ package service
 
 import (
 	"encoding/xml"
-	"log"
+	"log/slog"
 
 	"strings"
 
@@ -35,7 +35,7 @@ func (d *Document) InitiateDocument(content string) (newInitiation *model.Initia
 	var storedDoc *model.Document
 	var result *model.CheckResult
 
-	log.Println("store doc")
+	slog.Debug("store doc")
 	if storedDoc, err = d.store.StoreDocument(content); err != nil {
 		return nil, err
 	} else {

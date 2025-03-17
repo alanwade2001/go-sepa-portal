@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"log"
 	"log/slog"
 	"net/http"
 
@@ -29,7 +28,7 @@ func (d *Document) PostDocument(c *gin.Context) {
 
 	data, _ := c.GetRawData()
 
-	log.Println("initiating doc")
+	slog.Debug("initiating doc")
 	if newInitiation, err := d.service.InitiateDocument(string(data)); err != nil {
 		slog.Error("failed to post document", "Error", err)
 		c.IndentedJSON(http.StatusInternalServerError, newInitiation)

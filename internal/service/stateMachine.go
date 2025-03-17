@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"fmt"
+	"log/slog"
 
 	"github.com/alanwade2001/go-sepa-portal/internal/model"
 	"github.com/looplab/fsm"
@@ -32,5 +32,5 @@ func NewInitiationSM(initialState model.InitiationState) *InitiationSM {
 }
 
 func (s *InitiationSM) enterState(e *fsm.Event) {
-	fmt.Printf("The submission is %s\n", e.Dst)
+	slog.Info("State Machine", "state", e.Dst)
 }

@@ -4,7 +4,8 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"errors"
-	"log"
+	"log/slog"
+
 	"net/http"
 
 	"strings"
@@ -22,7 +23,7 @@ type Store struct {
 func NewStore() *Store {
 
 	address := utils.Getenv("DOCS_ADDRESS", "https://0.0.0.0:8443")
-	log.Printf("docs address: [%s]", address)
+	slog.Info("docs address", "address", address)
 
 	s := &Store{
 		Address: address,
@@ -44,17 +45,17 @@ func (s *Store) StoreDocument(content string) (doc *model.Document, err error) {
 
 	reader := strings.NewReader(content)
 
-	log.Println("storing document")
+	slog.Debug("storing document")
 	response, err := s.client.Post(s.Address+"/documents", "text/plain", reader)
 
 	if err != nil {
-		log.Printf("failed to post, %v", err)
+		slog.Error("failed to post", "error", err)
 		return nil, err
 	}
 
 	if response.StatusCode != http.StatusCreated {
 		err = errors.New("failed to create document: " + response.Status)
-		log.Printf("failed to store, %v", err)
+		slog.Error("failed to store", "error", err)
 		return nil, err
 	}
 
@@ -62,11 +63,11 @@ func (s *Store) StoreDocument(content string) (doc *model.Document, err error) {
 
 	err = json.NewDecoder(response.Body).Decode(doc)
 	if err != nil {
-		log.Printf("failed to decode, %v", err)
+		slog.Error("failed to decode", "error", err)
 		return nil, err
 	}
 
-	log.Printf("Document ID: %d", doc.ID)
+	slog.Info("Store Doc", "Doc ID", doc.ID)
 
 	return doc, nil
 }

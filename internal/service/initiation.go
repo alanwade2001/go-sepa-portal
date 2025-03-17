@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"log"
+	"log/slog"
 
 	"github.com/alanwade2001/go-sepa-portal/internal/model"
 	"github.com/alanwade2001/go-sepa-portal/internal/repository"
@@ -76,10 +76,10 @@ func (i *Initiation) SendInitiationCancel(id string) (*model.Initiation, error) 
 }
 func (i *Initiation) SendInitiationApprove(id string) (*model.Initiation, error) {
 	if initiation, err := i.SendInitiationEvent(id, model.ApproveEvent); err != nil {
-		log.Printf("Not sending approved to queue: [%v]", err)
+		slog.Info("Not sending approved to queue", "error", err)
 		return nil, err
 	} else {
-		log.Printf("sending approved to queue")
+		slog.Info("sending approved to queue")
 		i.message.SendApproved(initiation)
 		return initiation, nil
 	}
