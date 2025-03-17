@@ -70,7 +70,7 @@ func (c *Control) ControlGrpHdrCtrlSum(doc *schema.Pain001Document) (*model.Chec
 	if ghCtrlSum == ctrlSum {
 		return model.NewPassResult(), nil
 	} else {
-		return model.NewFailResult(fmt.Sprintf("ctrlSum does not match: expected=[%d], actual=[%d]", ghCtrlSum, ctrlSum), nil), nil
+		return model.NewFailResult(fmt.Sprintf("ctrlSum does not match: expected=[%f], actual=[%f]", ghCtrlSum, ctrlSum), nil), nil
 	}
 }
 
@@ -105,7 +105,7 @@ func (c *Control) ControlPmtInfCtrlSum(pmtInf *pain_001_001_03.PaymentInstructio
 	if piCtrlSum == ctrlSum {
 		return model.NewPassResult(), nil
 	} else {
-		return model.NewFailResult(fmt.Sprintf("ctrlSum does not match: expected=[%d], actual=[%d]", piCtrlSum, pmtInf.CtrlSum), nil), nil
+		return model.NewFailResult(fmt.Sprintf("ctrlSum does not match: expected=[%f], actual=[%f]", piCtrlSum, pmtInf.CtrlSum), nil), nil
 	}
 
 }
@@ -122,7 +122,7 @@ func (c *Control) ControlPmtInfNbOfTxs(pmtInf *pain_001_001_03.PaymentInstructio
 		if pass {
 			result = model.NewPassResult()
 		} else {
-			result = model.NewFailResult(fmt.Sprintf("nbOfTxs does not match: expected=[%d], actual=[%d]", piNbOfTxs, pmtInf.NbOfTxs), nil)
+			result = model.NewFailResult(fmt.Sprintf("nbOfTxs does not match: expected=[%d], actual=[%d]", piNbOfTxs, nbOfTxs), nil)
 		}
 	}
 
