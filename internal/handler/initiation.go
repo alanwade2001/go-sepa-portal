@@ -31,24 +31,20 @@ func NewInitiation(service *service.Initiation, r *routing.Router) *Initiation {
 
 // getInitiation responds with the list of all initiationss as JSON.
 func (i *Initiation) GetInitiation(c *gin.Context) {
-	initiations, err := i.service.FindAll()
 
-	code := http.StatusOK
-
-	if err != nil {
-		code = http.StatusInternalServerError
+	if initiations, err := i.service.FindAll(); err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, initiations)
+	} else {
+		c.IndentedJSON(http.StatusOK, initiations)
 	}
 
-	c.IndentedJSON(code, initiations)
 }
 
 // getInitiationByID locates the initiations whose ID value matches the id
 // parameter sent by the client, then returns that initiations as a response.
 func (i *Initiation) GetInitiationByID(c *gin.Context) {
 	id := c.Param("id")
-	initn, err := i.service.FindByID(id)
-
-	if err != nil {
+	if initn, err := i.service.FindByID(id); err != nil {
 		message := "Initiation not found"
 		payload := map[string]string{"error": message}
 		c.IndentedJSON(http.StatusNotFound, payload)
@@ -88,8 +84,7 @@ func (i *Initiation) PutResponse(c *gin.Context, initiation *model.Initiation, e
 		m := make(map[string]interface{})
 		m["error"] = err
 		c.IndentedJSON(http.StatusBadRequest, m)
-		return
+	} else {
+		c.IndentedJSON(http.StatusOK, initiation)
 	}
-
-	c.IndentedJSON(http.StatusOK, initiation)
 }

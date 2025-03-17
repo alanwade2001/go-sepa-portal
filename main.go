@@ -46,7 +46,14 @@ func (a *App) Run() {
 	a.Infra.RunWithTLS()
 }
 
+func (a *App) Cleanup() {
+	a.ControlService.Cleanup()
+}
+
 func main() {
 	app := NewApp()
+	defer app.Cleanup()
+
 	app.Run()
+
 }

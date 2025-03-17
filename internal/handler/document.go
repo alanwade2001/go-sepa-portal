@@ -2,6 +2,7 @@ package handler
 
 import (
 	"log"
+	"log/slog"
 	"net/http"
 
 	"github.com/alanwade2001/go-sepa-infra/routing"
@@ -29,15 +30,10 @@ func (d *Document) PostDocument(c *gin.Context) {
 	data, _ := c.GetRawData()
 
 	log.Println("initiating doc")
-	newInitiation, err := d.service.InitiateDocument(string(data))
-
-	code := http.StatusCreated
-
-	if err != nil {
-		code = http.StatusInternalServerError
+	if newInitiation, err := d.service.InitiateDocument(string(data)); err != nil {
+		slog.Error("failed to post document", "Error", err)
+		c.IndentedJSON(http.StatusInternalServerError, newInitiation)
+	} else {
+		c.IndentedJSON(http.StatusCreated, newInitiation)
 	}
-
-	// Add the new initiations to the slice.
-	c.IndentedJSON(code, newInitiation)
-
 }

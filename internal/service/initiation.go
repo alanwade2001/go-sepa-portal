@@ -29,9 +29,7 @@ func (i *Initiation) FindAll() ([]*model.Initiation, error) {
 		return nil, err
 	}
 
-	initiations := model.ToInitiations(initns)
-
-	return initiations, err
+	return model.FromEntities(initns)
 }
 
 func (i *Initiation) FindByID(id string) (*model.Initiation, error) {
@@ -41,7 +39,10 @@ func (i *Initiation) FindByID(id string) (*model.Initiation, error) {
 		return nil, err
 	}
 
-	initiation := model.ToInitiation(initn)
+	initiation := &model.Initiation{}
+	if err := initiation.FromEntity(initn); err != nil {
+		return nil, err
+	}
 
 	return initiation, err
 }
@@ -108,7 +109,10 @@ func (i *Initiation) SendInitiationEvent(id string, evt model.InitiationEvent) (
 		return nil, err
 	}
 
-	initiation := model.ToInitiation(updated)
+	initiation := &model.Initiation{}
+	if err := initiation.FromEntity(updated); err != nil {
+		return nil, err
+	}
 
 	return initiation, nil
 

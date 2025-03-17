@@ -1,45 +1,63 @@
 package service
 
 import (
+	"fmt"
+	"log/slog"
 	"strconv"
 
 	"github.com/alanwade2001/go-sepa-iso/pain_001_001_03"
 	"github.com/alanwade2001/go-sepa-iso/schema"
+	"github.com/alanwade2001/go-sepa-portal/internal/model"
+	xsdvalidate "github.com/terminalstatic/go-xsd-validate"
 )
 
 type Control struct {
+	p1Handler *xsdvalidate.XsdHandler
 }
 
 func NewControl() *Control {
-	control := &Control{}
+	xsdvalidate.Init()
+	if handler, err := schema.NewPain001XsdHandler(); err != nil {
+		slog.Error("failed to create pain001 xsd handler", "err", err)
+		panic(err)
+	} else {
+		control := &Control{
+			p1Handler: handler,
+		}
 
-	return control
+		return control
+	}
 }
 
-func (c *Control) Check(doc *schema.Pain001Document) bool {
+func (c *Control) Cleanup() {
+	c.p1Handler.Free()
+	xsdvalidate.Cleanup()
+}
 
-	if !c.ControlGrpHdrCtrlSum(doc) {
-		return false
+func (c *Control) Check(doc *schema.Pain001Document) (*model.CheckResult, error) {
+
+	if result, err := c.ControlGrpHdrCtrlSum(doc); !result.Pass || err != nil {
+		return result, err
 	}
 
-	if !c.ControlGrpHdrNbOfTxs(doc) {
-		return false
+	if result, err := c.ControlGrpHdrNbOfTxs(doc); !result.Pass || err != nil {
+		return result, err
 	}
 
 	for _, pmtInf := range doc.CstmrCdtTrfInitn.PmtInf {
-		if !c.ControlPmtInfCtrlSum(pmtInf) {
-			return false
+		if result, err := c.ControlPmtInfCtrlSum(pmtInf); !result.Pass || err != nil {
+			return result, err
 		}
 
-		if !c.ControlPmtInfNbOfTxs(pmtInf) {
-			return false
+		if result, err := c.ControlPmtInfNbOfTxs(pmtInf); !result.Pass || err != nil {
+			return result, err
 		}
 	}
 
-	return true
+	return model.NewPassResult(), nil
 }
 
-func (c *Control) ControlGrpHdrCtrlSum(doc *schema.Pain001Document) bool {
+func (c *Control) ControlGrpHdrCtrlSum(doc *schema.Pain001Document) (*model.CheckResult, error) {
 	ghCtrlSum := doc.CstmrCdtTrfInitn.GrpHdr.CtrlSum
 
 	pmtInves := doc.CstmrCdtTrfInitn.PmtInf
@@ -49,10 +67,14 @@ func (c *Control) ControlGrpHdrCtrlSum(doc *schema.Pain001Document) bool {
 		ctrlSum = ctrlSum + pmtInf.CtrlSum
 	}
 
-	return ghCtrlSum == ctrlSum
+	if ghCtrlSum == ctrlSum {
+		return model.NewPassResult(), nil
+	} else {
+		return model.NewFailResult(fmt.Sprintf("ctrlSum does not match: expected=[%d], actual=[%d]", ghCtrlSum, ctrlSum), nil), nil
+	}
 }
 
-func (c *Control) ControlGrpHdrNbOfTxs(doc *schema.Pain001Document) bool {
+func (c *Control) ControlGrpHdrNbOfTxs(doc *schema.Pain001Document) (*model.CheckResult, error) {
 	ghNbOfTxs, _ := strconv.Atoi(doc.CstmrCdtTrfInitn.GrpHdr.NbOfTxs)
 
 	pmtInves := doc.CstmrCdtTrfInitn.PmtInf
@@ -63,12 +85,16 @@ func (c *Control) ControlGrpHdrNbOfTxs(doc *schema.Pain001Document) bool {
 		nbOfTxs = nbOfTxs + no
 	}
 
-	return ghNbOfTxs == nbOfTxs
+	if ghNbOfTxs == nbOfTxs {
+		return model.NewPassResult(), nil
+	} else {
+		return model.NewFailResult(fmt.Sprintf("nbOfTxs does not match: expected=[%d], actual=[%d]", ghNbOfTxs, nbOfTxs), nil), nil
+	}
 }
 
-func (c *Control) ControlPmtInfCtrlSum(pmtInf *pain_001_001_03.PaymentInstructionInformation3) bool {
-	piCtrlSum := pmtInf.CtrlSum
+func (c *Control) ControlPmtInfCtrlSum(pmtInf *pain_001_001_03.PaymentInstructionInformation3) (*model.CheckResult, error) {
 
+	piCtrlSum := pmtInf.CtrlSum
 	cdtTrfTxInves := pmtInf.CdtTrfTxInf
 
 	var ctrlSum float64 = 0.0
@@ -76,13 +102,29 @@ func (c *Control) ControlPmtInfCtrlSum(pmtInf *pain_001_001_03.PaymentInstructio
 		ctrlSum = ctrlSum + cdtTrfTxInf.Amt.InstdAmt.Value
 	}
 
-	return piCtrlSum == ctrlSum
+	if piCtrlSum == ctrlSum {
+		return model.NewPassResult(), nil
+	} else {
+		return model.NewFailResult(fmt.Sprintf("ctrlSum does not match: expected=[%d], actual=[%d]", piCtrlSum, pmtInf.CtrlSum), nil), nil
+	}
+
 }
 
-func (c *Control) ControlPmtInfNbOfTxs(pmtInf *pain_001_001_03.PaymentInstructionInformation3) bool {
-	piNbOfTxs, _ := strconv.Atoi(pmtInf.NbOfTxs)
+func (c *Control) ControlPmtInfNbOfTxs(pmtInf *pain_001_001_03.PaymentInstructionInformation3) (*model.CheckResult, error) {
+	var result *model.CheckResult
+	if piNbOfTxs, err := strconv.Atoi(pmtInf.NbOfTxs); err != nil {
+		result = model.NewFailResult("Failed to parse Payment NbOfTxs", err)
+	} else {
 
-	nbOfTxs := len(pmtInf.CdtTrfTxInf)
+		nbOfTxs := len(pmtInf.CdtTrfTxInf)
+		pass := piNbOfTxs == nbOfTxs
 
-	return piNbOfTxs == nbOfTxs
+		if pass {
+			result = model.NewPassResult()
+		} else {
+			result = model.NewFailResult(fmt.Sprintf("nbOfTxs does not match: expected=[%d], actual=[%d]", piNbOfTxs, pmtInf.NbOfTxs), nil)
+		}
+	}
+
+	return result, nil
 }

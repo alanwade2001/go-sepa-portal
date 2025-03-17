@@ -13,6 +13,12 @@ var DEST_PORTAL_INITIATION_REJECTED string = "topic:portal.initiation.rejected"
 var DEST_PORTAL_INITIATION_APPROVED string = "topic:portal.initiation.approved"
 var DEST_PORTAL_INITIATION_CANCELLED string = "topic:portal.initiation.cancelled"
 
+type MessageSender interface {
+	Send(v interface{}) error
+}
+
+type SenderFunc func(initn *model.Initiation) error
+
 type Message struct {
 	sender q.MessageSender
 }
