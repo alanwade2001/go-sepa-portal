@@ -4,8 +4,8 @@ go 1.24.1
 
 require (
 	github.com/alanwade2001/go-sepa-db v0.0.0-20250314181629-ba7d1fd3f464
-	github.com/alanwade2001/go-sepa-infra v0.0.0-20250315081026-6cdd05febe6e
-	github.com/alanwade2001/go-sepa-iso v0.0.0-20250317150013-53854c05d098
+	github.com/alanwade2001/go-sepa-infra v0.0.0-20250315081258-15a31e175e55
+	github.com/alanwade2001/go-sepa-iso v0.0.0-20250322084358-d42e3ae71717
 	github.com/alanwade2001/go-sepa-q v0.0.0-20250314083628-f5d6c10782b5
 	github.com/alanwade2001/go-sepa-utils v0.0.0-20250314081604-0992fcffbc2d
 	github.com/gin-gonic/gin v1.10.0
@@ -16,7 +16,7 @@ require (
 )
 
 require (
-	github.com/bytedance/sonic v1.13.1 // indirect
+	github.com/bytedance/sonic v1.13.2 // indirect
 	github.com/bytedance/sonic/loader v0.2.4 // indirect
 	github.com/cloudwego/base64x v0.1.5 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -29,7 +29,7 @@ require (
 	github.com/goccy/go-json v0.10.5 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
-	github.com/jackc/pgx/v5 v5.7.2 // indirect
+	github.com/jackc/pgx/v5 v5.7.3 // indirect
 	github.com/jackc/puddle/v2 v2.2.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect

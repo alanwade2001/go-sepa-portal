@@ -11,8 +11,11 @@
             "mode": "auto",
             "program": "${fileDirname}",
             "env": {
-                "ADDRESS" : ":8082",
-                "DB_SCHEMA" : "portal"
+                "ADDRESS" : ":8443",
+                "DB_SCHEMA" : "portal",
+                "CERT":"go-sepa-portal.crt", 
+                "KEY":"go-sepa-portal.key",
+                "DOCS_ADDRESS": "https://:8444",
             }
         }
     ]

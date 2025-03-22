@@ -1,6 +1,7 @@
 package model
 
 import (
+	"log/slog"
 	"strconv"
 	"time"
 
@@ -35,18 +36,20 @@ func NewInitiation(gh *pain_001_001_03.GroupHeader32, state InitiationState, doc
 			RejectionReason: reason,
 		}
 		return initn, nil
+
 	}
 }
 
 func (i *Initiation) ToEntity() (*entity.Initiation, error) {
 
 	if creDtTm, err := time.Parse("2006-01-02T15:04:05", i.CreDtTm); err != nil {
+		slog.Error("Failed to parse creDtTm", "error", err)
 		return nil, err
 	} else {
 
 		newInitn := &entity.Initiation{
 			CtrlSum:         i.CtrlSum,
-			CreDtTm:         &creDtTm,
+			CreDtTm:         creDtTm,
 			MsgID:           i.MsgID,
 			NbOfTxs:         i.NbOfTxs,
 			State:           string(i.State),
@@ -65,7 +68,7 @@ func (i *Initiation) FromEntity(ent *entity.Initiation) error {
 	i.NbOfTxs = ent.NbOfTxs
 	i.State = InitiationState(ent.State)
 	i.DocID = ent.DocID
-	i.CreDtTm = ent.CreDtTm.Format("2025-03-17T08:04:46")
+	i.CreDtTm = ent.CreDtTm.Format("2006-03-15T12:12:12")
 	i.RejectionReason = ent.RejectionReason
 
 	return nil

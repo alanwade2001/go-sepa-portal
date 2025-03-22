@@ -30,11 +30,11 @@ func NewControl() *Control {
 }
 
 func (c *Control) Cleanup() {
-	c.p1Handler.Free()
-	xsdvalidate.Cleanup()
+	//c.p1Handler.Free()
+	//xsdvalidate.Cleanup()
 }
 
-func (c *Control) Check(doc *schema.Pain001Document) (*model.CheckResult, error) {
+func (c *Control) Check(doc *pain_001_001_03.Document) (*model.CheckResult, error) {
 
 	if result, err := c.ControlGrpHdrCtrlSum(doc); !result.Pass || err != nil {
 		return result, err
@@ -57,7 +57,7 @@ func (c *Control) Check(doc *schema.Pain001Document) (*model.CheckResult, error)
 	return model.NewPassResult(), nil
 }
 
-func (c *Control) ControlGrpHdrCtrlSum(doc *schema.Pain001Document) (*model.CheckResult, error) {
+func (c *Control) ControlGrpHdrCtrlSum(doc *pain_001_001_03.Document) (*model.CheckResult, error) {
 	ghCtrlSum := doc.CstmrCdtTrfInitn.GrpHdr.CtrlSum
 
 	pmtInves := doc.CstmrCdtTrfInitn.PmtInf
@@ -74,7 +74,7 @@ func (c *Control) ControlGrpHdrCtrlSum(doc *schema.Pain001Document) (*model.Chec
 	}
 }
 
-func (c *Control) ControlGrpHdrNbOfTxs(doc *schema.Pain001Document) (*model.CheckResult, error) {
+func (c *Control) ControlGrpHdrNbOfTxs(doc *pain_001_001_03.Document) (*model.CheckResult, error) {
 	ghNbOfTxs, _ := strconv.Atoi(doc.CstmrCdtTrfInitn.GrpHdr.NbOfTxs)
 
 	pmtInves := doc.CstmrCdtTrfInitn.PmtInf

@@ -6,7 +6,7 @@ import (
 
 	"strings"
 
-	s "github.com/alanwade2001/go-sepa-iso/schema"
+	"github.com/alanwade2001/go-sepa-iso/pain_001_001_03"
 
 	"github.com/alanwade2001/go-sepa-portal/internal/model"
 	"github.com/alanwade2001/go-sepa-portal/internal/repository"
@@ -39,10 +39,12 @@ func (d *Document) InitiateDocument(content string) (newInitiation *model.Initia
 	if storedDoc, err = d.store.StoreDocument(content); err != nil {
 		return nil, err
 	} else {
-		xmlDocument := &s.Pain001Document{}
-		xml.NewDecoder(strings.NewReader(content)).Decode(xmlDocument)
-
-		if result, err = d.control.Check(xmlDocument); err != nil {
+		xmlDocument := &pain_001_001_03.Document{}
+		if err := xml.NewDecoder(strings.NewReader(content)).Decode(xmlDocument); err != nil {
+			slog.Error("xml decode content", "error", err)
+			return nil, err
+		} else if result, err = d.control.Check(xmlDocument); err != nil {
+			slog.Error("control check", "error", err)
 			return nil, err
 		}
 
@@ -56,10 +58,13 @@ func (d *Document) InitiateDocument(content string) (newInitiation *model.Initia
 		gh := xmlDocument.CstmrCdtTrfInitn.GrpHdr
 
 		if newInitiation, err := model.NewInitiation(gh, state, storedDoc.ID, result.Msg); err != nil {
+			slog.Error("model mapping", "error", err)
 			return nil, err
 		} else if newInitn, err := newInitiation.ToEntity(); err != nil {
+			slog.Error("entity mapping", "error", err)
 			return nil, err
 		} else if persisted, err := d.initiationRepos.Perist(newInitn); err != nil {
+			slog.Error("initiation persisting", "error", err)
 			return nil, err
 		} else {
 			newInitiation.ID = persisted.Model.ID

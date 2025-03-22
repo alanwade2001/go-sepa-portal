@@ -21,7 +21,7 @@ func Test(t *testing.T) {
 			desc: "",
 			gh: &pain_001_001_03.GroupHeader32{
 				MsgId:   "msg-1",
-				CreDtTm: "2025-03-17T21:00:30",
+				CreDtTm: dt.Format("2006-03-15T12:12:12"),
 				NbOfTxs: "1",
 				CtrlSum: 10.01,
 				InitgPty: &pain_001_001_03.PartyIdentification32{
@@ -41,7 +41,7 @@ func Test(t *testing.T) {
 				MsgID:           "msg-1",
 				CtrlSum:         10.01,
 				NbOfTxs:         1,
-				CreDtTm:         "2025-03-17T21:00:30",
+				CreDtTm:         dt.Format("2006-03-15T12:12:12"),
 				State:           AcceptedState,
 				DocID:           6,
 				RejectionReason: "",

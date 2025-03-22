@@ -10,7 +10,7 @@ type Initiation struct {
 	Model           gorm.Model `gorm:"embedded"`
 	MsgID           string
 	NbOfTxs         uint
-	CreDtTm         *time.Time
+	CreDtTm         time.Time
 	CtrlSum         float64
 	State           string
 	DocID           uint
