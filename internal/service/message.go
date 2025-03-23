@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"errors"
 	"log/slog"
 
 	"github.com/alanwade2001/go-sepa-portal/internal/model"
@@ -23,12 +24,31 @@ type Message struct {
 	sender q.MessageSender
 }
 
-func NewMessage(sender q.MessageSender) *Message {
+type IMessage interface {
+	Send(initn *model.Initiation) error
+}
+
+func NewMessage(sender q.MessageSender) IMessage {
 	message := &Message{
 		sender: sender,
 	}
 
 	return message
+}
+
+func (s *Message) Send(initn *model.Initiation) error {
+	switch initn.State {
+	case model.AcceptedState:
+		return s.SendAccepted(initn)
+	case model.ApprovedState:
+		return s.SendApproved(initn)
+	case model.RejectedState:
+		return s.SendRejected(initn)
+	case model.CancelledState:
+		return s.SendCancelled(initn)
+	default:
+		return errors.New("unknown initiation state")
+	}
 }
 
 func (s *Message) SendAccepted(initn *model.Initiation) error {

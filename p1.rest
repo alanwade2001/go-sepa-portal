@@ -11,7 +11,7 @@ Content-Type: application/xml
     <CstmrCdtTrfInitn>
         <GrpHdr>
             <MsgId>MSG_ID1</MsgId>
-            <CreDtTm>2021-09-28T13:16:37</CreDtTm>
+            <CreDtTm>2021-09-28T13:16:37Z</CreDtTm>
             <NbOfTxs>1</NbOfTxs>
             <CtrlSum>11</CtrlSum>
             <InitgPty>

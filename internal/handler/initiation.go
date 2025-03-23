@@ -10,23 +10,37 @@ import (
 )
 
 type Initiation struct {
-	service *service.Initiation
+	service service.IInitiation
 }
 
-func NewInitiation(service *service.Initiation, r *routing.Router) *Initiation {
+type IInitiation interface {
+	Register(r *routing.Router)
+	GetInitiation(c *gin.Context)
+	GetInitiationByID(c *gin.Context)
+	PutInitiationApprove(c *gin.Context)
+	PutInitiationCancel(c *gin.Context)
+	PutInitiationAccept(c *gin.Context)
+	PutInitiationReject(c *gin.Context)
+}
+
+func NewInitiation(service service.IInitiation) IInitiation {
 	initiation := &Initiation{
 		service: service,
 	}
 
-	r.Router.GET("/initiations", initiation.GetInitiation)
-	r.Router.GET("/initiations/:id", initiation.GetInitiationByID)
-
-	r.Router.PUT("/initiations/:id/approve", initiation.PutInitiationApprove)
-	r.Router.PUT("/initiations/:id/cancel", initiation.PutInitiationCancel)
-	r.Router.PUT("/initiations/:id/accept", initiation.PutInitiationAccept)
-	r.Router.PUT("/initiations/:id/reject", initiation.PutInitiationReject)
-
 	return initiation
+}
+
+func (i Initiation) Register(r *routing.Router) {
+
+	r.Router.GET("/initiations", i.GetInitiation)
+	r.Router.GET("/initiations/:id", i.GetInitiationByID)
+
+	r.Router.PUT("/initiations/:id/approve", i.PutInitiationApprove)
+	r.Router.PUT("/initiations/:id/cancel", i.PutInitiationCancel)
+	r.Router.PUT("/initiations/:id/accept", i.PutInitiationAccept)
+	r.Router.PUT("/initiations/:id/reject", i.PutInitiationReject)
+
 }
 
 // getInitiation responds with the list of all initiationss as JSON.

@@ -1,19 +1,25 @@
 package service
 
 import (
-	"context"
-	"log/slog"
-
 	"github.com/alanwade2001/go-sepa-portal/internal/model"
 	"github.com/alanwade2001/go-sepa-portal/internal/repository"
 )
 
 type Initiation struct {
-	repository *repository.Initiation
-	message    *Message
+	repository repository.IInitiation
+	message    IMessage
 }
 
-func NewInitiation(repository *repository.Initiation, message *Message) *Initiation {
+type IInitiation interface {
+	FindAll() ([]*model.Initiation, error)
+	FindByID(id string) (*model.Initiation, error)
+	SendInitiationAccept(id string) (*model.Initiation, error)
+	SendInitiationReject(id string) (*model.Initiation, error)
+	SendInitiationCancel(id string) (*model.Initiation, error)
+	SendInitiationApprove(id string) (*model.Initiation, error)
+}
+
+func NewInitiation(repository repository.IInitiation, message IMessage) IInitiation {
 	initiation := &Initiation{
 		repository: repository,
 		message:    message,
@@ -33,87 +39,56 @@ func (i *Initiation) FindAll() ([]*model.Initiation, error) {
 }
 
 func (i *Initiation) FindByID(id string) (*model.Initiation, error) {
-	initn, err := i.repository.FindByID(id)
-
-	if err != nil {
+	if initn, err := i.repository.FindByID(id); err != nil {
 		return nil, err
+	} else {
+		initiation := &model.Initiation{}
+		if err := initiation.FromEntity(initn); err != nil {
+			return nil, err
+		} else {
+			return initiation, err
+		}
 	}
-
-	initiation := &model.Initiation{}
-	if err := initiation.FromEntity(initn); err != nil {
-		return nil, err
-	}
-
-	return initiation, err
 }
 
 func (i *Initiation) SendInitiationAccept(id string) (*model.Initiation, error) {
-	initiation, err := i.SendInitiationEvent(id, model.AcceptEvent)
-
-	if err == nil {
-		i.message.SendAccepted(initiation)
-	}
-
-	return initiation, err
+	return i.SendInitiationEvent(id, model.AcceptEvent)
 }
+
 func (i *Initiation) SendInitiationReject(id string) (*model.Initiation, error) {
-	initiation, err := i.SendInitiationEvent(id, model.RejectEvent)
-
-	if err == nil {
-		i.message.SendRejected(initiation)
-	}
-
-	return initiation, err
+	return i.SendInitiationEvent(id, model.RejectEvent)
 }
+
 func (i *Initiation) SendInitiationCancel(id string) (*model.Initiation, error) {
-	initiation, err := i.SendInitiationEvent(id, model.CancelEvent)
-
-	if err == nil {
-		i.message.SendCancelled(initiation)
-	}
-
-	return initiation, err
+	return i.SendInitiationEvent(id, model.CancelEvent)
 }
-func (i *Initiation) SendInitiationApprove(id string) (*model.Initiation, error) {
-	if initiation, err := i.SendInitiationEvent(id, model.ApproveEvent); err != nil {
-		slog.Info("Not sending approved to queue", "error", err)
-		return nil, err
-	} else {
-		slog.Info("sending approved to queue")
-		i.message.SendApproved(initiation)
-		return initiation, nil
-	}
 
+func (i *Initiation) SendInitiationApprove(id string) (*model.Initiation, error) {
+	return i.SendInitiationEvent(id, model.ApproveEvent)
 }
 
 func (i *Initiation) SendInitiationEvent(id string, evt model.InitiationEvent) (*model.Initiation, error) {
-	initn, err := i.repository.FindByID(id)
-
-	if err != nil {
+	if initn, err := i.repository.FindByID(id); err != nil {
 		return nil, err
+	} else {
+		currentState := model.InitiationState(initn.State)
+		sm := NewInitiationSM(currentState)
+
+		if initn.State, err = sm.FireEvent(evt); err != nil {
+			return nil, err
+		} else if updated, err := i.repository.Perist(initn); err != nil {
+			return nil, err
+		} else {
+			initiation := &model.Initiation{}
+			if err := initiation.FromEntity(updated); err != nil {
+				return nil, err
+			} else if err := i.message.Send(initiation); err != nil {
+				return nil, err
+			} else {
+				return initiation, nil
+			}
+		}
+
 	}
-
-	currentState := model.InitiationState(initn.State)
-
-	sm := NewInitiationSM(currentState)
-	err = sm.FSM.Event(context.Background(), string(evt))
-	if err != nil {
-		return nil, err
-	}
-
-	initn.State = sm.FSM.Current()
-
-	updated, err := i.repository.Perist(initn)
-
-	if err != nil {
-		return nil, err
-	}
-
-	initiation := &model.Initiation{}
-	if err := initiation.FromEntity(updated); err != nil {
-		return nil, err
-	}
-
-	return initiation, nil
 
 }

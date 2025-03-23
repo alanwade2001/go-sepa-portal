@@ -10,26 +10,31 @@ import (
 )
 
 type Document struct {
-	service *service.Document
+	Service service.IDocument
 }
 
-func NewDocument(service *service.Document, r *routing.Router) *Document {
-	document := &Document{
-		service: service,
-	}
+type IDocument interface {
+	PostDocument(c *gin.Context)
+	Register(r *routing.Router)
+}
 
-	r.Router.POST("/documents", document.PostDocument)
+func NewDocument(service service.IDocument) IDocument {
+	document := &Document{
+		Service: service}
 
 	return document
+}
+
+func (d Document) Register(r *routing.Router) {
+	r.Router.POST("/documents", d.PostDocument)
 }
 
 // postInitiation adds an initiations from JSON received in the request body.
 func (d *Document) PostDocument(c *gin.Context) {
 
-	data, _ := c.GetRawData()
-
-	slog.Debug("initiating doc")
-	if newInitiation, err := d.service.InitiateDocument(string(data)); err != nil {
+	if data, err := c.GetRawData(); err != nil {
+		c.IndentedJSON(http.StatusInternalServerError, err)
+	} else if newInitiation, err := d.Service.InitiateDocument(string(data)); err != nil {
 		slog.Error("failed to post document", "Error", err)
 		c.IndentedJSON(http.StatusInternalServerError, newInitiation)
 	} else {

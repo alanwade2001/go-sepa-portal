@@ -15,7 +15,11 @@ type Control struct {
 	p1Handler *xsdvalidate.XsdHandler
 }
 
-func NewControl() *Control {
+type IControl interface {
+	Check(doc *pain_001_001_03.Document) (*model.CheckResult, error)
+}
+
+func NewControl() IControl {
 	xsdvalidate.Init()
 	if handler, err := schema.NewPain001XsdHandler(); err != nil {
 		slog.Error("failed to create pain001 xsd handler", "err", err)
@@ -30,8 +34,8 @@ func NewControl() *Control {
 }
 
 func (c *Control) Cleanup() {
-	//c.p1Handler.Free()
-	//xsdvalidate.Cleanup()
+	c.p1Handler.Free()
+	xsdvalidate.Cleanup()
 }
 
 func (c *Control) Check(doc *pain_001_001_03.Document) (*model.CheckResult, error) {

@@ -9,13 +9,17 @@ import (
 )
 
 type InitiationSM struct {
-	FSM *fsm.FSM
+	fsm *fsm.FSM
 }
 
-func NewInitiationSM(initialState model.InitiationState) *InitiationSM {
+type IInitiationSM interface {
+	FireEvent(evt model.InitiationEvent) (string, error)
+}
+
+func NewInitiationSM(initialState model.InitiationState) IInitiationSM {
 	s := &InitiationSM{}
 
-	s.FSM = fsm.NewFSM(
+	s.fsm = fsm.NewFSM(
 		string(initialState),
 		fsm.Events{
 			{Name: string(model.AcceptEvent), Src: []string{string(model.InitiatedState)}, Dst: string(model.AcceptedState)},
@@ -33,4 +37,14 @@ func NewInitiationSM(initialState model.InitiationState) *InitiationSM {
 
 func (s *InitiationSM) enterState(e *fsm.Event) {
 	slog.Info("State Machine", "state", e.Dst)
+}
+
+func (s *InitiationSM) FireEvent(evt model.InitiationEvent) (string, error) {
+	if err := s.fsm.Event(context.Background(), string(evt)); err != nil {
+		return "", err
+	} else {
+		state := s.fsm.Current()
+		return state, nil
+	}
+
 }

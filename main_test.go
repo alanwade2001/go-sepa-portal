@@ -1,13 +1,19 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
+	"log"
+	"log/slog"
 	"net/http"
 	"net/http/httptest"
 	"os"
 
 	//"sepa/portal/main"
 	"testing"
+
+	"github.com/alanwade2001/go-sepa-portal/internal/repository/entity"
+	"github.com/stretchr/testify/assert"
 )
 
 var a *App
@@ -21,8 +27,12 @@ func TestMain(m *testing.M) {
 }
 
 func clearTable() {
-	a.Infra.Persist.DB.Exec("DELETE FROM INITIATIONS")
-	a.Infra.Persist.DB.Exec("ALTER SEQUENCE initiations_id_seq RESTART WITH 1")
+
+	a.Infra.Persist.DB.AutoMigrate(&entity.Initiation{})
+	log.Printf("created table: [%s]", "portal.initiations")
+
+	a.Infra.Persist.DB.Exec("DELETE FROM PORTAL.INITIATIONS")
+	a.Infra.Persist.DB.Exec("ALTER SEQUENCE PORTAL.initiations_id_seq RESTART WITH 1")
 }
 
 func executeRequest(req *http.Request) *httptest.ResponseRecorder {
@@ -72,7 +82,7 @@ var GOOD_XML string = `
     <CstmrCdtTrfInitn>
         <GrpHdr>
             <MsgId>MSG_ID1</MsgId>
-            <CreDtTm>2021-09-28T13:16:37.219430288</CreDtTm>
+            <CreDtTm>2021-09-28T13:16:37Z</CreDtTm>
             <NbOfTxs>1</NbOfTxs>
             <CtrlSum>11</CtrlSum>
             <InitgPty>
@@ -132,44 +142,50 @@ var GOOD_XML string = `
 </Document>
 `
 
-// func TestCreateInitiation(t *testing.T) {
+func TestCreateInitiation(t *testing.T) {
 
-// 	docId := 2
+	clearTable()
 
-// 	mockReturnBody := make(map[string]interface{})
-// 	mockReturnBody["id"] = docId
-// 	mockReturnBody["content"] = "hello world"
+	docId := 2
 
-// 	body, _ := json.Marshal(mockReturnBody)
+	mockReturnBody := make(map[string]interface{})
+	mockReturnBody["id"] = docId
+	mockReturnBody["content"] = "hello world"
 
-// 	testServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-// 		w.WriteHeader(201)
-// 		_, err := w.Write(body)
+	body, _ := json.Marshal(mockReturnBody)
 
-// 		assert.NoError(t, err)
-// 	}))
+	testServer := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(201)
+		_, err := w.Write(body)
 
-// 	defer testServer.Close()
+		assert.NoError(t, err)
+	}))
 
-// 	clearTable()
+	defer testServer.Close()
 
-// 	a.IStoreService.Address = testServer.URL
-// 	log.Printf("StoreService.Address: [%s]", a.StoreService.Address)
+	clearTable()
 
-// 	var xmlStr = []byte(GOOD_XML)
-// 	req, _ := http.NewRequest("POST", "/documents", bytes.NewBuffer(xmlStr))
-// 	req.Header.Set("Content-Type", "application/xml")
+	// *service.Store(a.StoreService).Address = testServer.URL
+	// log.Printf("StoreService.Address: [%s]", a.StoreService.Address)
 
-// 	response := executeRequest(req)
-// 	checkResponseCode(t, http.StatusCreated, response.Code)
+	var xmlStr = []byte(GOOD_XML)
+	req, _ := http.NewRequest("POST", "/documents", bytes.NewBuffer(xmlStr))
+	req.Header.Set("Content-Type", "application/xml")
 
-// 	var bodyMap map[string]interface{}
-// 	json.Unmarshal(response.Body.Bytes(), &bodyMap)
+	response := executeRequest(req)
+	checkResponseCode(t, http.StatusCreated, response.Code)
 
-// 	assert.Equal(t, 11.0, bodyMap["ctrlSum"])
-// 	assert.Equal(t, "1", bodyMap["nbOfTxs"])
-// 	assert.Equal(t, "Accepted", bodyMap["state"])
-// 	assert.Equal(t, "MSG_ID1", bodyMap["msgId"])
-// 	assert.Equal(t, 1.0, bodyMap["id"])
-// 	assert.Equal(t, float64(docId), bodyMap["docId"])
-// }
+	var bodyMap map[string]interface{}
+	bodyStr := string(response.Body.Bytes())
+
+	slog.Info("response", "body", bodyStr)
+
+	json.Unmarshal(response.Body.Bytes(), &bodyMap)
+
+	assert.Equal(t, 11.0, bodyMap["ctrlSum"])
+	assert.Equal(t, float64(1), bodyMap["nbOfTxs"])
+	assert.Equal(t, "Accepted", bodyMap["state"])
+	assert.Equal(t, "MSG_ID1", bodyMap["msgId"])
+	assert.Equal(t, 1.0, bodyMap["id"])
+	assert.Equal(t, float64(docId), bodyMap["docId"])
+}

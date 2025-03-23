@@ -42,7 +42,7 @@ func NewInitiation(gh *pain_001_001_03.GroupHeader32, state InitiationState, doc
 
 func (i *Initiation) ToEntity() (*entity.Initiation, error) {
 
-	if creDtTm, err := time.Parse("2006-01-02T15:04:05", i.CreDtTm); err != nil {
+	if creDtTm, err := time.Parse(time.RFC3339, i.CreDtTm); err != nil {
 		slog.Error("Failed to parse creDtTm", "error", err)
 		return nil, err
 	} else {
@@ -68,7 +68,7 @@ func (i *Initiation) FromEntity(ent *entity.Initiation) error {
 	i.NbOfTxs = ent.NbOfTxs
 	i.State = InitiationState(ent.State)
 	i.DocID = ent.DocID
-	i.CreDtTm = ent.CreDtTm.Format("2006-03-15T12:12:12")
+	i.CreDtTm = ent.CreDtTm.Format(time.RFC3339)
 	i.RejectionReason = ent.RejectionReason
 
 	return nil
@@ -77,13 +77,13 @@ func (i *Initiation) FromEntity(ent *entity.Initiation) error {
 func FromEntities(ents []*entity.Initiation) ([]*Initiation, error) {
 	models := make([]*Initiation, len(ents))
 
-	for _, ent := range ents {
+	for i, ent := range ents {
 		mdl := &Initiation{}
 
 		if err := mdl.FromEntity(ent); err != nil {
 			return nil, err
 		} else {
-			models = append(models, mdl)
+			models[i] = mdl
 		}
 	}
 

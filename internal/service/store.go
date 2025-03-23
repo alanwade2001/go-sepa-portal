@@ -20,7 +20,11 @@ type Store struct {
 	client  http.Client
 }
 
-func NewStore() *Store {
+type IStore interface {
+	StoreDocument(content string) (doc *model.Document, err error)
+}
+
+func NewStore() IStore {
 
 	address := utils.Getenv("DOCS_ADDRESS", "https://0.0.0.0:8443")
 	slog.Info("docs address", "address", address)

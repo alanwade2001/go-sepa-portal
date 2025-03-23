@@ -9,12 +9,13 @@ import (
 
 type App struct {
 	Infra             *inf.Infra
-	Repository        *repository.Initiation
-	ControlService    *service.Control
-	DocumentService   *service.Document
-	DocumentHandler   *handler.Document
-	InitiationService *service.Initiation
-	InitiationHandler *handler.Initiation
+	Repository        repository.IInitiation
+	ControlService    service.IControl
+	StoreService      service.IStore
+	DocumentService   service.IDocument
+	DocumentHandler   handler.IDocument
+	InitiationService service.IInitiation
+	InitiationHandler handler.IInitiation
 }
 
 func NewApp() *App {
@@ -26,14 +27,19 @@ func NewApp() *App {
 	store := service.NewStore()
 	control := service.NewControl()
 
-	docSvc := service.NewDocument(repos, message, control, store)
-	docHdlr := handler.NewDocument(docSvc, infra.Router)
-	initnHdlr := handler.NewInitiation(initnSvc, infra.Router)
+	pain001Decoder := &service.Pain001Decoder{}
+
+	docSvc := service.NewDocument(repos, message, control, store, pain001Decoder)
+	docHdlr := handler.NewDocument(docSvc)
+	docHdlr.Register(infra.Router)
+	initnHdlr := handler.NewInitiation(initnSvc)
+	initnHdlr.Register(infra.Router)
 
 	app := &App{
 		Infra:             infra,
 		Repository:        repos,
 		DocumentService:   docSvc,
+		StoreService:      store,
 		DocumentHandler:   docHdlr,
 		InitiationService: initnSvc,
 		InitiationHandler: initnHdlr,
@@ -47,7 +53,7 @@ func (a *App) Run() {
 }
 
 func (a *App) Cleanup() {
-	a.ControlService.Cleanup()
+	//a.ControlService.Cleanup()
 }
 
 func main() {

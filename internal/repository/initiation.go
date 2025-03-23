@@ -9,7 +9,13 @@ type Initiation struct {
 	persist *db.Persist
 }
 
-func NewInitiation(persist *db.Persist) *Initiation {
+type IInitiation interface {
+	FindAll() ([]*entity.Initiation, error)
+	FindByID(id string) (*entity.Initiation, error)
+	Perist(initn *entity.Initiation) (*entity.Initiation, error)
+}
+
+func NewInitiation(persist *db.Persist) IInitiation {
 	initiation := &Initiation{
 		persist: persist,
 	}
