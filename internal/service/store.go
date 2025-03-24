@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/alanwade2001/go-sepa-portal/internal/model"
+	"github.com/alanwade2001/go-sepa-portal/internal/data"
 	utils "github.com/alanwade2001/go-sepa-utils"
 )
 
@@ -21,7 +21,7 @@ type Store struct {
 }
 
 type IStore interface {
-	StoreDocument(content string) (doc *model.Document, err error)
+	StoreDocument(content string) (doc *data.Document, err error)
 }
 
 func NewStore() IStore {
@@ -44,8 +44,8 @@ func NewStore() IStore {
 	return s
 }
 
-func (s *Store) StoreDocument(content string) (doc *model.Document, err error) {
-	doc = &model.Document{}
+func (s *Store) StoreDocument(content string) (doc *data.Document, err error) {
+	doc = &data.Document{}
 
 	reader := strings.NewReader(content)
 

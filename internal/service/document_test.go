@@ -4,14 +4,13 @@ import (
 	"testing"
 
 	"github.com/alanwade2001/go-sepa-iso/pain_001_001_03"
+	"github.com/alanwade2001/go-sepa-portal/internal/data"
 	"github.com/alanwade2001/go-sepa-portal/internal/model"
-	"github.com/alanwade2001/go-sepa-portal/internal/repository/entity"
 	"github.com/alanwade2001/go-sepa-portal/internal/service"
 	mrepos "github.com/alanwade2001/go-sepa-portal/mocks/internal_/repository"
 	mservice "github.com/alanwade2001/go-sepa-portal/mocks/internal_/service"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"gorm.io/gorm"
 )
 
 func Test_Pass(t *testing.T) {
@@ -37,10 +36,8 @@ func Test_Pass(t *testing.T) {
 		},
 	}, nil)
 
-	repos.On("Perist", mock.Anything).Return(&entity.Initiation{
-		Model: gorm.Model{
-			ID: 1,
-		},
+	repos.On("Persist", mock.Anything).Return(&data.Initiation{
+		ID: 1,
 	}, nil)
 
 	msg.On("Send", mock.Anything).Return(nil)
@@ -55,8 +52,8 @@ func Test_Pass(t *testing.T) {
 	newInitn, err := docSvc.InitiateDocument("dummy xml")
 
 	assert.NoError(t, err)
-	assert.Equal(t, "msgid", newInitn.MsgID)
-	assert.Equal(t, "", newInitn.RejectionReason)
+	assert.Equal(t, "msgid", newInitn.MsgId)
+	assert.Equal(t, "", newInitn.RjctdRsn)
 
 }
 
@@ -83,10 +80,8 @@ func Test_Fail(t *testing.T) {
 		},
 	}, nil)
 
-	repos.On("Perist", mock.Anything).Return(&entity.Initiation{
-		Model: gorm.Model{
-			ID: 1,
-		},
+	repos.On("Persist", mock.Anything).Return(&data.Initiation{
+		ID: 1,
 	}, nil)
 
 	//msg.On("SendAccepted", mock.Anything).Times(0)
@@ -102,7 +97,7 @@ func Test_Fail(t *testing.T) {
 	newInitn, err := docSvc.InitiateDocument("dummy xml")
 
 	assert.NoError(t, err)
-	assert.Equal(t, "msgid", newInitn.MsgID)
-	assert.Equal(t, "error", newInitn.RejectionReason)
+	assert.Equal(t, "msgid", newInitn.MsgId)
+	assert.Equal(t, "error", newInitn.RjctdRsn)
 
 }

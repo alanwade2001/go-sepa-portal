@@ -12,7 +12,6 @@ require (
 	github.com/looplab/fsm v1.0.2
 	github.com/stretchr/testify v1.10.0
 	github.com/terminalstatic/go-xsd-validate v0.1.6
-	gorm.io/gorm v1.25.12
 )
 
 require (
@@ -53,4 +52,5 @@ require (
 	google.golang.org/protobuf v1.36.5 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/driver/postgres v1.5.11 // indirect
+	gorm.io/gorm v1.25.12 // indirect
 )

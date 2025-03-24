@@ -4,7 +4,7 @@ import (
 	"log"
 
 	db "github.com/alanwade2001/go-sepa-db"
-	"github.com/alanwade2001/go-sepa-portal/internal/repository/entity"
+	"github.com/alanwade2001/go-sepa-portal/internal/data"
 
 	utils "github.com/alanwade2001/go-sepa-utils"
 )
@@ -17,7 +17,7 @@ func main() {
 		return
 	}
 
-	persist.DB.AutoMigrate(&entity.Initiation{})
+	persist.DB.AutoMigrate(&data.Initiation{})
 	log.Printf("created table: [%s]", "initiations")
 
 }

@@ -12,7 +12,7 @@ import (
 	//"sepa/portal/main"
 	"testing"
 
-	"github.com/alanwade2001/go-sepa-portal/internal/repository/entity"
+	"github.com/alanwade2001/go-sepa-portal/internal/data"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -28,7 +28,7 @@ func TestMain(m *testing.M) {
 
 func clearTable() {
 
-	a.Infra.Persist.DB.AutoMigrate(&entity.Initiation{})
+	a.Infra.Persist.DB.AutoMigrate(&data.Initiation{})
 	log.Printf("created table: [%s]", "portal.initiations")
 
 	a.Infra.Persist.DB.Exec("DELETE FROM PORTAL.INITIATIONS")

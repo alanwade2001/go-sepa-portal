@@ -1,10 +1,4 @@
-package model
-
-type CheckResult struct {
-	Pass bool
-	Msg  string
-	Err  error
-}
+package data
 
 func NewCheckResult(pass bool, msg string, err error) *CheckResult {
 	return &CheckResult{

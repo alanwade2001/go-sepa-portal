@@ -8,7 +8,7 @@ import (
 
 	"github.com/alanwade2001/go-sepa-iso/pain_001_001_03"
 
-	"github.com/alanwade2001/go-sepa-portal/internal/model"
+	"github.com/alanwade2001/go-sepa-portal/internal/data"
 	"github.com/alanwade2001/go-sepa-portal/internal/repository"
 )
 
@@ -33,7 +33,7 @@ func NewDocument(initiationRepos repository.IInitiation, message IMessage, contr
 }
 
 type IDocument interface {
-	InitiateDocument(content string) (newInitiation *model.Initiation, err error)
+	InitiateDocument(content string) (newInitiation *data.Initiation, err error)
 }
 
 type IPain001Decoder interface {
@@ -52,10 +52,10 @@ func (d Pain001Decoder) Decode(content string) (*pain_001_001_03.Document, error
 	}
 }
 
-func (d *Document) InitiateDocument(content string) (newInitiation *model.Initiation, err error) {
+func (d *Document) InitiateDocument(content string) (newInitiation *data.Initiation, err error) {
 
-	var storedDoc *model.Document
-	var result *model.CheckResult
+	var storedDoc *data.Document
+	var result *data.CheckResult
 
 	slog.Debug("store doc")
 	if storedDoc, err = d.store.StoreDocument(content); err != nil {
@@ -69,31 +69,35 @@ func (d *Document) InitiateDocument(content string) (newInitiation *model.Initia
 			return nil, err
 		} else {
 
-			var state model.InitiationState
+			var state data.InitiationState
 			if result.Pass {
-				state = model.AcceptedState
+				state = data.AcceptedState
 			} else {
-				state = model.RejectedState
+				state = data.RejectedState
 			}
 
 			gh := xmlDocument.CstmrCdtTrfInitn.GrpHdr
+			dataInitn := &data.Initiation{
+				MsgId:    gh.MsgId,
+				CreDtTm:  gh.CreDtTm,
+				NbOfTxs:  gh.NbOfTxs,
+				CtrlSum:  gh.CtrlSum,
+				State:    state,
+				RjctdRsn: result.Msg,
+				DocID:    storedDoc.ID,
+			}
 
-			if newInitiation, err := model.NewInitiation(gh, state, storedDoc.ID, result.Msg); err != nil {
-				slog.Error("model mapping", "error", err)
-				return nil, err
-			} else if newInitn, err := newInitiation.ToEntity(); err != nil {
-				slog.Error("entity mapping", "error", err)
-				return nil, err
-			} else if persisted, err := d.initiationRepos.Perist(newInitn); err != nil {
+			if persisted, err := d.initiationRepos.Persist(dataInitn); err != nil {
 				slog.Error("initiation persisting", "error", err)
 				return nil, err
 			} else {
-				newInitiation.ID = persisted.Model.ID
+				dataInitn.ID = persisted.ID
 
-				if err := d.message.Send(newInitiation); err != nil {
+				if err := d.message.Send(dataInitn); err != nil {
 					return nil, err
 				} else {
-					return newInitiation, err
+
+					return dataInitn, err
 				}
 			}
 		}

@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	model "github.com/alanwade2001/go-sepa-portal/internal/model"
+	data "github.com/alanwade2001/go-sepa-portal/internal/data"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -13,7 +13,7 @@ type IMessage struct {
 }
 
 // Send provides a mock function with given fields: initn
-func (_m *IMessage) Send(initn *model.Initiation) error {
+func (_m *IMessage) Send(initn *data.Initiation) error {
 	ret := _m.Called(initn)
 
 	if len(ret) == 0 {
@@ -21,7 +21,7 @@ func (_m *IMessage) Send(initn *model.Initiation) error {
 	}
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(*model.Initiation) error); ok {
+	if rf, ok := ret.Get(0).(func(*data.Initiation) error); ok {
 		r0 = rf(initn)
 	} else {
 		r0 = ret.Error(0)

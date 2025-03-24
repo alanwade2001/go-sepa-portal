@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	entity "github.com/alanwade2001/go-sepa-portal/internal/repository/entity"
+	data "github.com/alanwade2001/go-sepa-portal/internal/data"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -13,23 +13,23 @@ type IInitiation struct {
 }
 
 // FindAll provides a mock function with no fields
-func (_m *IInitiation) FindAll() ([]*entity.Initiation, error) {
+func (_m *IInitiation) FindAll() ([]*data.Initiation, error) {
 	ret := _m.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for FindAll")
 	}
 
-	var r0 []*entity.Initiation
+	var r0 []*data.Initiation
 	var r1 error
-	if rf, ok := ret.Get(0).(func() ([]*entity.Initiation, error)); ok {
+	if rf, ok := ret.Get(0).(func() ([]*data.Initiation, error)); ok {
 		return rf()
 	}
-	if rf, ok := ret.Get(0).(func() []*entity.Initiation); ok {
+	if rf, ok := ret.Get(0).(func() []*data.Initiation); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*entity.Initiation)
+			r0 = ret.Get(0).([]*data.Initiation)
 		}
 	}
 
@@ -43,23 +43,23 @@ func (_m *IInitiation) FindAll() ([]*entity.Initiation, error) {
 }
 
 // FindByID provides a mock function with given fields: id
-func (_m *IInitiation) FindByID(id string) (*entity.Initiation, error) {
+func (_m *IInitiation) FindByID(id string) (*data.Initiation, error) {
 	ret := _m.Called(id)
 
 	if len(ret) == 0 {
 		panic("no return value specified for FindByID")
 	}
 
-	var r0 *entity.Initiation
+	var r0 *data.Initiation
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (*entity.Initiation, error)); ok {
+	if rf, ok := ret.Get(0).(func(string) (*data.Initiation, error)); ok {
 		return rf(id)
 	}
-	if rf, ok := ret.Get(0).(func(string) *entity.Initiation); ok {
+	if rf, ok := ret.Get(0).(func(string) *data.Initiation); ok {
 		r0 = rf(id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*entity.Initiation)
+			r0 = ret.Get(0).(*data.Initiation)
 		}
 	}
 
@@ -72,28 +72,28 @@ func (_m *IInitiation) FindByID(id string) (*entity.Initiation, error) {
 	return r0, r1
 }
 
-// Perist provides a mock function with given fields: initn
-func (_m *IInitiation) Perist(initn *entity.Initiation) (*entity.Initiation, error) {
+// Persist provides a mock function with given fields: initn
+func (_m *IInitiation) Persist(initn *data.Initiation) (*data.Initiation, error) {
 	ret := _m.Called(initn)
 
 	if len(ret) == 0 {
-		panic("no return value specified for Perist")
+		panic("no return value specified for Persist")
 	}
 
-	var r0 *entity.Initiation
+	var r0 *data.Initiation
 	var r1 error
-	if rf, ok := ret.Get(0).(func(*entity.Initiation) (*entity.Initiation, error)); ok {
+	if rf, ok := ret.Get(0).(func(*data.Initiation) (*data.Initiation, error)); ok {
 		return rf(initn)
 	}
-	if rf, ok := ret.Get(0).(func(*entity.Initiation) *entity.Initiation); ok {
+	if rf, ok := ret.Get(0).(func(*data.Initiation) *data.Initiation); ok {
 		r0 = rf(initn)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*entity.Initiation)
+			r0 = ret.Get(0).(*data.Initiation)
 		}
 	}
 
-	if rf, ok := ret.Get(1).(func(*entity.Initiation) error); ok {
+	if rf, ok := ret.Get(1).(func(*data.Initiation) error); ok {
 		r1 = rf(initn)
 	} else {
 		r1 = ret.Error(1)

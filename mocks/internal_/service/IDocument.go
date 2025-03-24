@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	model "github.com/alanwade2001/go-sepa-portal/internal/model"
+	data "github.com/alanwade2001/go-sepa-portal/internal/data"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -13,23 +13,23 @@ type IDocument struct {
 }
 
 // InitiateDocument provides a mock function with given fields: content
-func (_m *IDocument) InitiateDocument(content string) (*model.Initiation, error) {
+func (_m *IDocument) InitiateDocument(content string) (*data.Initiation, error) {
 	ret := _m.Called(content)
 
 	if len(ret) == 0 {
 		panic("no return value specified for InitiateDocument")
 	}
 
-	var r0 *model.Initiation
+	var r0 *data.Initiation
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (*model.Initiation, error)); ok {
+	if rf, ok := ret.Get(0).(func(string) (*data.Initiation, error)); ok {
 		return rf(content)
 	}
-	if rf, ok := ret.Get(0).(func(string) *model.Initiation); ok {
+	if rf, ok := ret.Get(0).(func(string) *data.Initiation); ok {
 		r0 = rf(content)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*model.Initiation)
+			r0 = ret.Get(0).(*data.Initiation)
 		}
 	}
 

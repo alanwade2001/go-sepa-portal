@@ -33,11 +33,11 @@ func (d Document) Register(r *routing.Router) {
 func (d *Document) PostDocument(c *gin.Context) {
 
 	if data, err := c.GetRawData(); err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, err)
+		c.XML(http.StatusInternalServerError, err)
 	} else if newInitiation, err := d.Service.InitiateDocument(string(data)); err != nil {
 		slog.Error("failed to post document", "Error", err)
-		c.IndentedJSON(http.StatusInternalServerError, newInitiation)
+		c.XML(http.StatusInternalServerError, newInitiation)
 	} else {
-		c.IndentedJSON(http.StatusCreated, newInitiation)
+		c.XML(http.StatusCreated, newInitiation)
 	}
 }

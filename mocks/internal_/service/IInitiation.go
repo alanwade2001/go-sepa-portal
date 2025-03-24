@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	model "github.com/alanwade2001/go-sepa-portal/internal/model"
+	data "github.com/alanwade2001/go-sepa-portal/internal/data"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -13,23 +13,23 @@ type IInitiation struct {
 }
 
 // FindAll provides a mock function with no fields
-func (_m *IInitiation) FindAll() ([]*model.Initiation, error) {
+func (_m *IInitiation) FindAll() ([]*data.Initiation, error) {
 	ret := _m.Called()
 
 	if len(ret) == 0 {
 		panic("no return value specified for FindAll")
 	}
 
-	var r0 []*model.Initiation
+	var r0 []*data.Initiation
 	var r1 error
-	if rf, ok := ret.Get(0).(func() ([]*model.Initiation, error)); ok {
+	if rf, ok := ret.Get(0).(func() ([]*data.Initiation, error)); ok {
 		return rf()
 	}
-	if rf, ok := ret.Get(0).(func() []*model.Initiation); ok {
+	if rf, ok := ret.Get(0).(func() []*data.Initiation); ok {
 		r0 = rf()
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]*model.Initiation)
+			r0 = ret.Get(0).([]*data.Initiation)
 		}
 	}
 
@@ -43,23 +43,23 @@ func (_m *IInitiation) FindAll() ([]*model.Initiation, error) {
 }
 
 // FindByID provides a mock function with given fields: id
-func (_m *IInitiation) FindByID(id string) (*model.Initiation, error) {
+func (_m *IInitiation) FindByID(id string) (*data.Initiation, error) {
 	ret := _m.Called(id)
 
 	if len(ret) == 0 {
 		panic("no return value specified for FindByID")
 	}
 
-	var r0 *model.Initiation
+	var r0 *data.Initiation
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (*model.Initiation, error)); ok {
+	if rf, ok := ret.Get(0).(func(string) (*data.Initiation, error)); ok {
 		return rf(id)
 	}
-	if rf, ok := ret.Get(0).(func(string) *model.Initiation); ok {
+	if rf, ok := ret.Get(0).(func(string) *data.Initiation); ok {
 		r0 = rf(id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*model.Initiation)
+			r0 = ret.Get(0).(*data.Initiation)
 		}
 	}
 
@@ -73,23 +73,23 @@ func (_m *IInitiation) FindByID(id string) (*model.Initiation, error) {
 }
 
 // SendInitiationAccept provides a mock function with given fields: id
-func (_m *IInitiation) SendInitiationAccept(id string) (*model.Initiation, error) {
+func (_m *IInitiation) SendInitiationAccept(id string) (*data.Initiation, error) {
 	ret := _m.Called(id)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SendInitiationAccept")
 	}
 
-	var r0 *model.Initiation
+	var r0 *data.Initiation
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (*model.Initiation, error)); ok {
+	if rf, ok := ret.Get(0).(func(string) (*data.Initiation, error)); ok {
 		return rf(id)
 	}
-	if rf, ok := ret.Get(0).(func(string) *model.Initiation); ok {
+	if rf, ok := ret.Get(0).(func(string) *data.Initiation); ok {
 		r0 = rf(id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*model.Initiation)
+			r0 = ret.Get(0).(*data.Initiation)
 		}
 	}
 
@@ -103,23 +103,23 @@ func (_m *IInitiation) SendInitiationAccept(id string) (*model.Initiation, error
 }
 
 // SendInitiationApprove provides a mock function with given fields: id
-func (_m *IInitiation) SendInitiationApprove(id string) (*model.Initiation, error) {
+func (_m *IInitiation) SendInitiationApprove(id string) (*data.Initiation, error) {
 	ret := _m.Called(id)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SendInitiationApprove")
 	}
 
-	var r0 *model.Initiation
+	var r0 *data.Initiation
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (*model.Initiation, error)); ok {
+	if rf, ok := ret.Get(0).(func(string) (*data.Initiation, error)); ok {
 		return rf(id)
 	}
-	if rf, ok := ret.Get(0).(func(string) *model.Initiation); ok {
+	if rf, ok := ret.Get(0).(func(string) *data.Initiation); ok {
 		r0 = rf(id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*model.Initiation)
+			r0 = ret.Get(0).(*data.Initiation)
 		}
 	}
 
@@ -133,23 +133,23 @@ func (_m *IInitiation) SendInitiationApprove(id string) (*model.Initiation, erro
 }
 
 // SendInitiationCancel provides a mock function with given fields: id
-func (_m *IInitiation) SendInitiationCancel(id string) (*model.Initiation, error) {
+func (_m *IInitiation) SendInitiationCancel(id string) (*data.Initiation, error) {
 	ret := _m.Called(id)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SendInitiationCancel")
 	}
 
-	var r0 *model.Initiation
+	var r0 *data.Initiation
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (*model.Initiation, error)); ok {
+	if rf, ok := ret.Get(0).(func(string) (*data.Initiation, error)); ok {
 		return rf(id)
 	}
-	if rf, ok := ret.Get(0).(func(string) *model.Initiation); ok {
+	if rf, ok := ret.Get(0).(func(string) *data.Initiation); ok {
 		r0 = rf(id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*model.Initiation)
+			r0 = ret.Get(0).(*data.Initiation)
 		}
 	}
 
@@ -163,23 +163,23 @@ func (_m *IInitiation) SendInitiationCancel(id string) (*model.Initiation, error
 }
 
 // SendInitiationReject provides a mock function with given fields: id
-func (_m *IInitiation) SendInitiationReject(id string) (*model.Initiation, error) {
+func (_m *IInitiation) SendInitiationReject(id string) (*data.Initiation, error) {
 	ret := _m.Called(id)
 
 	if len(ret) == 0 {
 		panic("no return value specified for SendInitiationReject")
 	}
 
-	var r0 *model.Initiation
+	var r0 *data.Initiation
 	var r1 error
-	if rf, ok := ret.Get(0).(func(string) (*model.Initiation, error)); ok {
+	if rf, ok := ret.Get(0).(func(string) (*data.Initiation, error)); ok {
 		return rf(id)
 	}
-	if rf, ok := ret.Get(0).(func(string) *model.Initiation); ok {
+	if rf, ok := ret.Get(0).(func(string) *data.Initiation); ok {
 		r0 = rf(id)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*model.Initiation)
+			r0 = ret.Get(0).(*data.Initiation)
 		}
 	}
 

@@ -7,7 +7,7 @@ import (
 
 	"github.com/alanwade2001/go-sepa-iso/pain_001_001_03"
 	"github.com/alanwade2001/go-sepa-iso/schema"
-	"github.com/alanwade2001/go-sepa-portal/internal/model"
+	"github.com/alanwade2001/go-sepa-portal/internal/data"
 	xsdvalidate "github.com/terminalstatic/go-xsd-validate"
 )
 
@@ -16,7 +16,7 @@ type Control struct {
 }
 
 type IControl interface {
-	Check(doc *pain_001_001_03.Document) (*model.CheckResult, error)
+	Check(doc *pain_001_001_03.Document) (*data.CheckResult, error)
 }
 
 func NewControl() IControl {
@@ -38,7 +38,7 @@ func (c *Control) Cleanup() {
 	xsdvalidate.Cleanup()
 }
 
-func (c *Control) Check(doc *pain_001_001_03.Document) (*model.CheckResult, error) {
+func (c *Control) Check(doc *pain_001_001_03.Document) (*data.CheckResult, error) {
 
 	if result, err := c.ControlGrpHdrCtrlSum(doc); !result.Pass || err != nil {
 		return result, err
@@ -58,10 +58,10 @@ func (c *Control) Check(doc *pain_001_001_03.Document) (*model.CheckResult, erro
 		}
 	}
 
-	return model.NewPassResult(), nil
+	return data.NewPassResult(), nil
 }
 
-func (c *Control) ControlGrpHdrCtrlSum(doc *pain_001_001_03.Document) (*model.CheckResult, error) {
+func (c *Control) ControlGrpHdrCtrlSum(doc *pain_001_001_03.Document) (*data.CheckResult, error) {
 	ghCtrlSum := doc.CstmrCdtTrfInitn.GrpHdr.CtrlSum
 
 	pmtInves := doc.CstmrCdtTrfInitn.PmtInf
@@ -72,13 +72,13 @@ func (c *Control) ControlGrpHdrCtrlSum(doc *pain_001_001_03.Document) (*model.Ch
 	}
 
 	if ghCtrlSum == ctrlSum {
-		return model.NewPassResult(), nil
+		return data.NewPassResult(), nil
 	} else {
-		return model.NewFailResult(fmt.Sprintf("ctrlSum does not match: expected=[%f], actual=[%f]", ghCtrlSum, ctrlSum), nil), nil
+		return data.NewFailResult(fmt.Sprintf("ctrlSum does not match: expected=[%f], actual=[%f]", ghCtrlSum, ctrlSum), nil), nil
 	}
 }
 
-func (c *Control) ControlGrpHdrNbOfTxs(doc *pain_001_001_03.Document) (*model.CheckResult, error) {
+func (c *Control) ControlGrpHdrNbOfTxs(doc *pain_001_001_03.Document) (*data.CheckResult, error) {
 	ghNbOfTxs, _ := strconv.Atoi(doc.CstmrCdtTrfInitn.GrpHdr.NbOfTxs)
 
 	pmtInves := doc.CstmrCdtTrfInitn.PmtInf
@@ -90,13 +90,13 @@ func (c *Control) ControlGrpHdrNbOfTxs(doc *pain_001_001_03.Document) (*model.Ch
 	}
 
 	if ghNbOfTxs == nbOfTxs {
-		return model.NewPassResult(), nil
+		return data.NewPassResult(), nil
 	} else {
-		return model.NewFailResult(fmt.Sprintf("nbOfTxs does not match: expected=[%d], actual=[%d]", ghNbOfTxs, nbOfTxs), nil), nil
+		return data.NewFailResult(fmt.Sprintf("nbOfTxs does not match: expected=[%d], actual=[%d]", ghNbOfTxs, nbOfTxs), nil), nil
 	}
 }
 
-func (c *Control) ControlPmtInfCtrlSum(pmtInf *pain_001_001_03.PaymentInstructionInformation3) (*model.CheckResult, error) {
+func (c *Control) ControlPmtInfCtrlSum(pmtInf *pain_001_001_03.PaymentInstructionInformation3) (*data.CheckResult, error) {
 
 	piCtrlSum := pmtInf.CtrlSum
 	cdtTrfTxInves := pmtInf.CdtTrfTxInf
@@ -107,26 +107,26 @@ func (c *Control) ControlPmtInfCtrlSum(pmtInf *pain_001_001_03.PaymentInstructio
 	}
 
 	if piCtrlSum == ctrlSum {
-		return model.NewPassResult(), nil
+		return data.NewPassResult(), nil
 	} else {
-		return model.NewFailResult(fmt.Sprintf("ctrlSum does not match: expected=[%f], actual=[%f]", piCtrlSum, pmtInf.CtrlSum), nil), nil
+		return data.NewFailResult(fmt.Sprintf("ctrlSum does not match: expected=[%f], actual=[%f]", piCtrlSum, pmtInf.CtrlSum), nil), nil
 	}
 
 }
 
-func (c *Control) ControlPmtInfNbOfTxs(pmtInf *pain_001_001_03.PaymentInstructionInformation3) (*model.CheckResult, error) {
-	var result *model.CheckResult
+func (c *Control) ControlPmtInfNbOfTxs(pmtInf *pain_001_001_03.PaymentInstructionInformation3) (*data.CheckResult, error) {
+	var result *data.CheckResult
 	if piNbOfTxs, err := strconv.Atoi(pmtInf.NbOfTxs); err != nil {
-		result = model.NewFailResult("Failed to parse Payment NbOfTxs", err)
+		result = data.NewFailResult("Failed to parse Payment NbOfTxs", err)
 	} else {
 
 		nbOfTxs := len(pmtInf.CdtTrfTxInf)
 		pass := piNbOfTxs == nbOfTxs
 
 		if pass {
-			result = model.NewPassResult()
+			result = data.NewPassResult()
 		} else {
-			result = model.NewFailResult(fmt.Sprintf("nbOfTxs does not match: expected=[%d], actual=[%d]", piNbOfTxs, nbOfTxs), nil)
+			result = data.NewFailResult(fmt.Sprintf("nbOfTxs does not match: expected=[%d], actual=[%d]", piNbOfTxs, nbOfTxs), nil)
 		}
 	}
 

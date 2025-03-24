@@ -1,5 +1,5 @@
 
-PUT https://localhost:8443/initiations/33/approve HTTP/1.1
+PUT https://localhost:8443/initiations/2/approve HTTP/1.1
 
 ###
 
@@ -80,7 +80,7 @@ Content-Type: application/xml
     <CstmrCdtTrfInitn>
         <GrpHdr>
             <MsgId>MSG_ID1</MsgId>
-            <CreDtTm>2021-09-28T13:16:37</CreDtTm>
+            <CreDtTm>2021-09-28T13:16:37Z</CreDtTm>
             <NbOfTxs>2</NbOfTxs>
             <CtrlSum>11</CtrlSum>
             <InitgPty>

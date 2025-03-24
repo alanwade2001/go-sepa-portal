@@ -2,30 +2,28 @@ package service_test
 
 import (
 	"testing"
-	"time"
 
+	"github.com/alanwade2001/go-sepa-portal/internal/data"
 	"github.com/alanwade2001/go-sepa-portal/internal/model"
-	"github.com/alanwade2001/go-sepa-portal/internal/repository/entity"
 	"github.com/alanwade2001/go-sepa-portal/internal/service"
 	mrepos "github.com/alanwade2001/go-sepa-portal/mocks/internal_/repository"
 	mocks "github.com/alanwade2001/go-sepa-portal/mocks/internal_/service"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
-	"gorm.io/gorm"
 )
 
 func TestFindByID(t *testing.T) {
 
 	repos := mrepos.NewIInitiation(t)
-	repos.On("FindByID", mock.AnythingOfType("string")).Return(&entity.Initiation{
-		Model:           gorm.Model{ID: 1},
-		MsgID:           "msgid",
-		NbOfTxs:         1,
-		CreDtTm:         time.Now(),
-		CtrlSum:         10.01,
-		State:           "Approved",
-		DocID:           1,
-		RejectionReason: "",
+	repos.On("FindByID", mock.AnythingOfType("string")).Return(&data.Initiation{
+		ID:       1,
+		MsgId:    "msgid",
+		NbOfTxs:  "1",
+		CreDtTm:  "2025-03-24T18:10:55Z",
+		CtrlSum:  10.01,
+		State:    "Approved",
+		DocID:    1,
+		RjctdRsn: "",
 	}, nil)
 
 	msg := mocks.NewIMessage(t)
@@ -37,43 +35,43 @@ func TestFindByID(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, mdl)
 
-	assert.Equal(t, "msgid", mdl.MsgID)
+	assert.Equal(t, "msgid", mdl.MsgId)
 
 }
 
 func TestFindAll(t *testing.T) {
 
 	repos := mrepos.NewIInitiation(t)
-	repos.On("FindAll").Return([]*entity.Initiation{
+	repos.On("FindAll").Return([]*data.Initiation{
 		{
-			Model:           gorm.Model{ID: 1},
-			MsgID:           "msgid",
-			NbOfTxs:         1,
-			CreDtTm:         time.Now(),
-			CtrlSum:         10.01,
-			State:           "Approved",
-			DocID:           1,
-			RejectionReason: "",
+			ID:       1,
+			MsgId:    "msgid",
+			NbOfTxs:  "1",
+			CreDtTm:  "2025-03-24T18:10:55Z",
+			CtrlSum:  10.01,
+			State:    "Approved",
+			DocID:    1,
+			RjctdRsn: "",
 		},
 		{
-			Model:           gorm.Model{ID: 2},
-			MsgID:           "msgid2",
-			NbOfTxs:         2,
-			CreDtTm:         time.Now(),
-			CtrlSum:         10.02,
-			State:           "Approved",
-			DocID:           2,
-			RejectionReason: "",
+			ID:       2,
+			MsgId:    "msgid2",
+			NbOfTxs:  "2",
+			CreDtTm:  "2025-03-24T18:10:55Z",
+			CtrlSum:  10.02,
+			State:    "Approved",
+			DocID:    2,
+			RjctdRsn: "",
 		},
 		{
-			Model:           gorm.Model{ID: 3},
-			MsgID:           "msgid3",
-			NbOfTxs:         3,
-			CreDtTm:         time.Now(),
-			CtrlSum:         10.03,
-			State:           "Rejected",
-			DocID:           3,
-			RejectionReason: "error",
+			ID:       3,
+			MsgId:    "msgid3",
+			NbOfTxs:  "3",
+			CreDtTm:  "2025-03-24T18:10:55Z",
+			CtrlSum:  10.03,
+			State:    "Rejected",
+			DocID:    3,
+			RjctdRsn: "error",
 		},
 	}, nil)
 
@@ -94,26 +92,26 @@ func TestFindAll(t *testing.T) {
 func TestAccept(t *testing.T) {
 
 	repos := mrepos.NewIInitiation(t)
-	repos.On("FindByID", mock.AnythingOfType("string")).Return(&entity.Initiation{
-		Model:           gorm.Model{ID: 1},
-		MsgID:           "msgid",
-		NbOfTxs:         1,
-		CreDtTm:         time.Now(),
-		CtrlSum:         10.01,
-		State:           string(model.InitiatedState),
-		DocID:           1,
-		RejectionReason: "",
+	repos.On("FindByID", mock.AnythingOfType("string")).Return(&data.Initiation{
+		ID:       1,
+		MsgId:    "msgid",
+		NbOfTxs:  "1",
+		CreDtTm:  "2025-03-24T18:10:55Z",
+		CtrlSum:  10.01,
+		State:    "Approved",
+		DocID:    1,
+		RjctdRsn: "",
 	}, nil)
 
-	repos.On("Perist", mock.Anything).Return(&entity.Initiation{
-		Model:           gorm.Model{ID: 1},
-		MsgID:           "msgid",
-		NbOfTxs:         1,
-		CreDtTm:         time.Now(),
-		CtrlSum:         10.01,
-		State:           string(model.AcceptedState),
-		DocID:           1,
-		RejectionReason: "",
+	repos.On("Persist", mock.Anything).Return(&data.Initiation{
+		ID:       1,
+		MsgId:    "msgid",
+		NbOfTxs:  "1",
+		CreDtTm:  "2025-03-24T18:10:55Z",
+		CtrlSum:  10.01,
+		State:    "Approved",
+		DocID:    1,
+		RjctdRsn: "",
 	}, nil)
 
 	msg := mocks.NewIMessage(t)

@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/alanwade2001/go-sepa-infra/routing"
-	"github.com/alanwade2001/go-sepa-portal/internal/model"
+	"github.com/alanwade2001/go-sepa-portal/internal/data"
 	"github.com/alanwade2001/go-sepa-portal/internal/service"
 	"github.com/gin-gonic/gin"
 )
@@ -92,13 +92,13 @@ func (i *Initiation) PutInitiationReject(c *gin.Context) {
 	i.PutResponse(c, initiation, err)
 }
 
-func (i *Initiation) PutResponse(c *gin.Context, initiation *model.Initiation, err error) {
+func (i *Initiation) PutResponse(c *gin.Context, initiation *data.Initiation, err error) {
 
 	if err != nil {
 		m := make(map[string]interface{})
 		m["error"] = err
-		c.IndentedJSON(http.StatusBadRequest, m)
+		c.XML(http.StatusBadRequest, m)
 	} else {
-		c.IndentedJSON(http.StatusOK, initiation)
+		c.XML(http.StatusOK, initiation)
 	}
 }

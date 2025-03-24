@@ -13,22 +13,22 @@ type IInitiationSM struct {
 }
 
 // FireEvent provides a mock function with given fields: evt
-func (_m *IInitiationSM) FireEvent(evt model.InitiationEvent) (string, error) {
+func (_m *IInitiationSM) FireEvent(evt model.InitiationEvent) (model.InitiationState, error) {
 	ret := _m.Called(evt)
 
 	if len(ret) == 0 {
 		panic("no return value specified for FireEvent")
 	}
 
-	var r0 string
+	var r0 model.InitiationState
 	var r1 error
-	if rf, ok := ret.Get(0).(func(model.InitiationEvent) (string, error)); ok {
+	if rf, ok := ret.Get(0).(func(model.InitiationEvent) (model.InitiationState, error)); ok {
 		return rf(evt)
 	}
-	if rf, ok := ret.Get(0).(func(model.InitiationEvent) string); ok {
+	if rf, ok := ret.Get(0).(func(model.InitiationEvent) model.InitiationState); ok {
 		r0 = rf(evt)
 	} else {
-		r0 = ret.Get(0).(string)
+		r0 = ret.Get(0).(model.InitiationState)
 	}
 
 	if rf, ok := ret.Get(1).(func(model.InitiationEvent) error); ok {

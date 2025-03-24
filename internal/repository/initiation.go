@@ -2,7 +2,7 @@ package repository
 
 import (
 	db "github.com/alanwade2001/go-sepa-db"
-	"github.com/alanwade2001/go-sepa-portal/internal/repository/entity"
+	"github.com/alanwade2001/go-sepa-portal/internal/data"
 )
 
 type Initiation struct {
@@ -10,9 +10,9 @@ type Initiation struct {
 }
 
 type IInitiation interface {
-	FindAll() ([]*entity.Initiation, error)
-	FindByID(id string) (*entity.Initiation, error)
-	Perist(initn *entity.Initiation) (*entity.Initiation, error)
+	FindAll() ([]*data.Initiation, error)
+	FindByID(id string) (*data.Initiation, error)
+	Persist(initn *data.Initiation) (*data.Initiation, error)
 }
 
 func NewInitiation(persist *db.Persist) IInitiation {
@@ -23,8 +23,8 @@ func NewInitiation(persist *db.Persist) IInitiation {
 	return initiation
 }
 
-func (s *Initiation) FindAll() ([]*entity.Initiation, error) {
-	var initiations []*entity.Initiation
+func (s *Initiation) FindAll() ([]*data.Initiation, error) {
+	var initiations []*data.Initiation
 	if err := s.persist.DB.Find(&initiations).Error; err != nil {
 		return nil, err
 	}
@@ -32,8 +32,8 @@ func (s *Initiation) FindAll() ([]*entity.Initiation, error) {
 	return initiations, nil
 }
 
-func (s *Initiation) FindByID(id string) (*entity.Initiation, error) {
-	initiation := &entity.Initiation{}
+func (s *Initiation) FindByID(id string) (*data.Initiation, error) {
+	initiation := &data.Initiation{}
 	if err := s.persist.DB.First(initiation, id).Error; err != nil {
 		return nil, err
 	}
@@ -41,7 +41,7 @@ func (s *Initiation) FindByID(id string) (*entity.Initiation, error) {
 	return initiation, nil
 }
 
-func (s *Initiation) Perist(initn *entity.Initiation) (*entity.Initiation, error) {
+func (s *Initiation) Persist(initn *data.Initiation) (*data.Initiation, error) {
 	tx := s.persist.DB.Save(initn)
 	err := tx.Error
 	return initn, err

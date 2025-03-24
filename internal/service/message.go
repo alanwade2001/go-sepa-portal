@@ -5,7 +5,7 @@ import (
 	"errors"
 	"log/slog"
 
-	"github.com/alanwade2001/go-sepa-portal/internal/model"
+	"github.com/alanwade2001/go-sepa-portal/internal/data"
 	q "github.com/alanwade2001/go-sepa-q"
 )
 
@@ -18,14 +18,12 @@ type MessageSender interface {
 	Send(v interface{}) error
 }
 
-type SenderFunc func(initn *model.Initiation) error
-
 type Message struct {
 	sender q.MessageSender
 }
 
 type IMessage interface {
-	Send(initn *model.Initiation) error
+	Send(initn *data.Initiation) error
 }
 
 func NewMessage(sender q.MessageSender) IMessage {
@@ -36,38 +34,38 @@ func NewMessage(sender q.MessageSender) IMessage {
 	return message
 }
 
-func (s *Message) Send(initn *model.Initiation) error {
+func (s *Message) Send(initn *data.Initiation) error {
 	switch initn.State {
-	case model.AcceptedState:
+	case data.AcceptedState:
 		return s.SendAccepted(initn)
-	case model.ApprovedState:
+	case data.ApprovedState:
 		return s.SendApproved(initn)
-	case model.RejectedState:
+	case data.RejectedState:
 		return s.SendRejected(initn)
-	case model.CancelledState:
+	case data.CancelledState:
 		return s.SendCancelled(initn)
 	default:
 		return errors.New("unknown initiation state")
 	}
 }
 
-func (s *Message) SendAccepted(initn *model.Initiation) error {
+func (s *Message) SendAccepted(initn *data.Initiation) error {
 	return s.sendInitiation(DEST_PORTAL_INITIATION_ACCEPTED, initn)
 }
 
-func (s *Message) SendRejected(initn *model.Initiation) error {
+func (s *Message) SendRejected(initn *data.Initiation) error {
 	return s.sendInitiation(DEST_PORTAL_INITIATION_REJECTED, initn)
 }
 
-func (s *Message) SendApproved(initn *model.Initiation) error {
+func (s *Message) SendApproved(initn *data.Initiation) error {
 	return s.sendInitiation(DEST_PORTAL_INITIATION_APPROVED, initn)
 }
 
-func (s *Message) SendCancelled(initn *model.Initiation) error {
+func (s *Message) SendCancelled(initn *data.Initiation) error {
 	return s.sendInitiation(DEST_PORTAL_INITIATION_CANCELLED, initn)
 }
 
-func (s *Message) sendInitiation(dest string, initn *model.Initiation) error {
+func (s *Message) sendInitiation(dest string, initn *data.Initiation) error {
 	bytes, err := json.MarshalIndent(initn, "", "  ")
 
 	if err != nil {
