@@ -4,7 +4,7 @@ import (
 	"log"
 
 	db "github.com/alanwade2001/go-sepa-db"
-	"github.com/alanwade2001/go-sepa-portal/internal/data"
+	"github.com/alanwade2001/go-sepa-portal/data"
 
 	utils "github.com/alanwade2001/go-sepa-utils"
 )

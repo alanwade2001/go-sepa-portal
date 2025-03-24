@@ -5,7 +5,7 @@ import (
 	"errors"
 	"log/slog"
 
-	"github.com/alanwade2001/go-sepa-portal/internal/data"
+	"github.com/alanwade2001/go-sepa-portal/data"
 	q "github.com/alanwade2001/go-sepa-q"
 )
 

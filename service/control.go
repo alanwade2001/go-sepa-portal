@@ -7,7 +7,7 @@ import (
 
 	"github.com/alanwade2001/go-sepa-iso/pain_001_001_03"
 	"github.com/alanwade2001/go-sepa-iso/schema"
-	"github.com/alanwade2001/go-sepa-portal/internal/data"
+	"github.com/alanwade2001/go-sepa-portal/data"
 	xsdvalidate "github.com/terminalstatic/go-xsd-validate"
 )
 

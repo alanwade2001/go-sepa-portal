@@ -8,8 +8,8 @@ import (
 
 	"github.com/alanwade2001/go-sepa-iso/pain_001_001_03"
 
-	"github.com/alanwade2001/go-sepa-portal/internal/data"
-	"github.com/alanwade2001/go-sepa-portal/internal/repository"
+	"github.com/alanwade2001/go-sepa-portal/data"
+	"github.com/alanwade2001/go-sepa-portal/repository"
 )
 
 type Document struct {

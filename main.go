@@ -2,9 +2,9 @@ package main
 
 import (
 	inf "github.com/alanwade2001/go-sepa-infra"
-	"github.com/alanwade2001/go-sepa-portal/internal/handler"
-	"github.com/alanwade2001/go-sepa-portal/internal/repository"
-	"github.com/alanwade2001/go-sepa-portal/internal/service"
+	"github.com/alanwade2001/go-sepa-portal/handler"
+	"github.com/alanwade2001/go-sepa-portal/repository"
+	"github.com/alanwade2001/go-sepa-portal/service"
 )
 
 type App struct {

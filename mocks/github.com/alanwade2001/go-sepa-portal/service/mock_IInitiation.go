@@ -3,7 +3,7 @@
 package service
 
 import (
-	data "github.com/alanwade2001/go-sepa-portal/internal/data"
+	data "github.com/alanwade2001/go-sepa-portal/data"
 	mock "github.com/stretchr/testify/mock"
 )
 

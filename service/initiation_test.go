@@ -3,18 +3,18 @@ package service_test
 import (
 	"testing"
 
-	"github.com/alanwade2001/go-sepa-portal/internal/data"
-	"github.com/alanwade2001/go-sepa-portal/internal/model"
-	"github.com/alanwade2001/go-sepa-portal/internal/service"
-	mrepos "github.com/alanwade2001/go-sepa-portal/mocks/internal_/repository"
-	mocks "github.com/alanwade2001/go-sepa-portal/mocks/internal_/service"
+	"github.com/alanwade2001/go-sepa-portal/data"
+	"github.com/alanwade2001/go-sepa-portal/mocks/github.com/alanwade2001/go-sepa-portal/repository"
+	mocks "github.com/alanwade2001/go-sepa-portal/mocks/github.com/alanwade2001/go-sepa-portal/service"
+	"github.com/alanwade2001/go-sepa-portal/service"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
 
 func TestFindByID(t *testing.T) {
 
-	repos := mrepos.NewIInitiation(t)
+	repos := repository.NewMockIInitiation(t)
 	repos.On("FindByID", mock.AnythingOfType("string")).Return(&data.Initiation{
 		ID:       1,
 		MsgId:    "msgid",
@@ -26,7 +26,7 @@ func TestFindByID(t *testing.T) {
 		RjctdRsn: "",
 	}, nil)
 
-	msg := mocks.NewIMessage(t)
+	msg := mocks.NewMockIMessage(t)
 
 	svc := service.NewInitiation(repos, msg)
 
@@ -41,7 +41,7 @@ func TestFindByID(t *testing.T) {
 
 func TestFindAll(t *testing.T) {
 
-	repos := mrepos.NewIInitiation(t)
+	repos := repository.NewMockIInitiation(t)
 	repos.On("FindAll").Return([]*data.Initiation{
 		{
 			ID:       1,
@@ -75,7 +75,7 @@ func TestFindAll(t *testing.T) {
 		},
 	}, nil)
 
-	msg := mocks.NewIMessage(t)
+	msg := mocks.NewMockIMessage(t)
 
 	svc := service.NewInitiation(repos, msg)
 
@@ -85,36 +85,42 @@ func TestFindAll(t *testing.T) {
 	assert.NotNil(t, mdls)
 
 	assert.Len(t, mdls, 3)
-	assert.Equal(t, mdls[2].State, model.RejectedState)
+	assert.Equal(t, mdls[2].State, data.RejectedState)
 
 }
 
 func TestAccept(t *testing.T) {
 
-	repos := mrepos.NewIInitiation(t)
+	repos := repository.NewMockIInitiation(t)
 	repos.On("FindByID", mock.AnythingOfType("string")).Return(&data.Initiation{
-		ID:       1,
 		MsgId:    "msgid",
 		NbOfTxs:  "1",
 		CreDtTm:  "2025-03-24T18:10:55Z",
 		CtrlSum:  10.01,
-		State:    "Approved",
+		State:    data.InitiatedState,
 		DocID:    1,
 		RjctdRsn: "",
 	}, nil)
 
-	repos.On("Persist", mock.Anything).Return(&data.Initiation{
-		ID:       1,
-		MsgId:    "msgid",
-		NbOfTxs:  "1",
-		CreDtTm:  "2025-03-24T18:10:55Z",
-		CtrlSum:  10.01,
-		State:    "Approved",
-		DocID:    1,
-		RjctdRsn: "",
-	}, nil)
+	var response data.Initiation
+	repos.On("Persist", mock.Anything).Run(
+		func(args mock.Arguments) {
+			response = *args.Get(0).(*data.Initiation)
+		},
+	).Return(&response, nil)
 
-	msg := mocks.NewIMessage(t)
+	// .Return(&data.Initiation{
+	// 	ID:       1,
+	// 	MsgId:    "msgid",
+	// 	NbOfTxs:  "1",
+	// 	CreDtTm:  "2025-03-24T18:10:55Z",
+	// 	CtrlSum:  10.01,
+	// 	State:    data.InitiatedState,
+	// 	DocID:    1,
+	// 	RjctdRsn: "",
+	// }, nil)
+
+	msg := mocks.NewMockIMessage(t)
 	msg.On("Send", mock.Anything).Return(nil)
 
 	svc := service.NewInitiation(repos, msg)
@@ -124,6 +130,6 @@ func TestAccept(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, mdl)
 
-	assert.Equal(t, model.AcceptedState, mdl.State)
+	assert.Equal(t, data.AcceptedState, mdl.State)
 
 }

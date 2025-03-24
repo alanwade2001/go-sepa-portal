@@ -12,7 +12,7 @@ import (
 	//"sepa/portal/main"
 	"testing"
 
-	"github.com/alanwade2001/go-sepa-portal/internal/data"
+	"github.com/alanwade2001/go-sepa-portal/data"
 	"github.com/stretchr/testify/assert"
 )
 

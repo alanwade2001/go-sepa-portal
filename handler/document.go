@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/alanwade2001/go-sepa-infra/routing"
-	"github.com/alanwade2001/go-sepa-portal/internal/service"
+	"github.com/alanwade2001/go-sepa-portal/service"
 	"github.com/gin-gonic/gin"
 )
 

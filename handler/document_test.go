@@ -9,9 +9,9 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/alanwade2001/go-sepa-portal/internal/data"
-	"github.com/alanwade2001/go-sepa-portal/internal/handler"
-	mocks "github.com/alanwade2001/go-sepa-portal/mocks/internal_/service"
+	"github.com/alanwade2001/go-sepa-portal/data"
+	"github.com/alanwade2001/go-sepa-portal/handler"
+	"github.com/alanwade2001/go-sepa-portal/mocks/github.com/alanwade2001/go-sepa-portal/service"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
@@ -19,7 +19,7 @@ import (
 func Test(t *testing.T) {
 
 	slog.Info("Line 1")
-	service := mocks.NewIDocument(t)
+	service := service.NewMockIDocument(t)
 
 	initn := &data.Initiation{
 		ID: 1,

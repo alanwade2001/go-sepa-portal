@@ -4,23 +4,23 @@ import (
 	"testing"
 
 	"github.com/alanwade2001/go-sepa-iso/pain_001_001_03"
-	"github.com/alanwade2001/go-sepa-portal/internal/data"
-	"github.com/alanwade2001/go-sepa-portal/internal/model"
-	"github.com/alanwade2001/go-sepa-portal/internal/service"
-	mrepos "github.com/alanwade2001/go-sepa-portal/mocks/internal_/repository"
-	mservice "github.com/alanwade2001/go-sepa-portal/mocks/internal_/service"
+	"github.com/alanwade2001/go-sepa-portal/data"
+	"github.com/alanwade2001/go-sepa-portal/mocks/github.com/alanwade2001/go-sepa-portal/repository"
+	mock_svc "github.com/alanwade2001/go-sepa-portal/mocks/github.com/alanwade2001/go-sepa-portal/service"
+	"github.com/alanwade2001/go-sepa-portal/service"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
 
 func Test_Pass(t *testing.T) {
-	repos := mrepos.NewIInitiation(t)
-	msg := mservice.NewIMessage(t)
-	ctrl := mservice.NewIControl(t)
-	store := mservice.NewIStore(t)
-	decoder := mservice.NewIPain001Decoder(t)
+	repos := repository.NewMockIInitiation(t)
+	msg := mock_svc.NewMockIMessage(t)
+	ctrl := mock_svc.NewMockIControl(t)
+	store := mock_svc.NewMockIStore(t)
+	decoder := mock_svc.NewMockIPain001Decoder(t)
 
-	store.On("StoreDocument", mock.AnythingOfType("string")).Return(&model.Document{
+	store.On("StoreDocument", mock.AnythingOfType("string")).Return(&data.Document{
 		ID:      1,
 		Content: "content",
 	}, nil)
@@ -42,7 +42,7 @@ func Test_Pass(t *testing.T) {
 
 	msg.On("Send", mock.Anything).Return(nil)
 
-	ctrl.On("Check", mock.Anything).Return(&model.CheckResult{
+	ctrl.On("Check", mock.Anything).Return(&data.CheckResult{
 		Pass: true,
 		Msg:  "",
 	}, nil)
@@ -58,13 +58,13 @@ func Test_Pass(t *testing.T) {
 }
 
 func Test_Fail(t *testing.T) {
-	repos := mrepos.NewIInitiation(t)
-	msg := mservice.NewIMessage(t)
-	ctrl := mservice.NewIControl(t)
-	store := mservice.NewIStore(t)
-	decoder := mservice.NewIPain001Decoder(t)
+	repos := repository.NewMockIInitiation(t)
+	msg := mock_svc.NewMockIMessage(t)
+	ctrl := mock_svc.NewMockIControl(t)
+	store := mock_svc.NewMockIStore(t)
+	decoder := mock_svc.NewMockIPain001Decoder(t)
 
-	store.On("StoreDocument", mock.AnythingOfType("string")).Return(&model.Document{
+	store.On("StoreDocument", mock.AnythingOfType("string")).Return(&data.Document{
 		ID:      1,
 		Content: "content",
 	}, nil)
@@ -87,7 +87,7 @@ func Test_Fail(t *testing.T) {
 	//msg.On("SendAccepted", mock.Anything).Times(0)
 	msg.On("Send", mock.Anything).Return(nil)
 
-	ctrl.On("Check", mock.Anything).Return(&model.CheckResult{
+	ctrl.On("Check", mock.Anything).Return(&data.CheckResult{
 		Pass: false,
 		Msg:  "error",
 	}, nil)
