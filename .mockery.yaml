@@ -1,0 +1,8 @@
+with-expecter: true
+packages:
+    github.com/alanwade2001/go-sepa-portal:
+        # place your package-specific config here
+        config:
+          all: True
+          recursive: True
+          
